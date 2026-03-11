@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Chart.js para visualizaciones -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -44,7 +43,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar simple */
         aside {
             background-color: var(--card-bg);
             border-right: 1px solid var(--border);
@@ -52,6 +50,9 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
         .logo {
@@ -80,11 +81,12 @@
             font-weight: 600;
         }
 
-        /* Main Content */
+        nav li:hover:not(.active) {
+            background: #f1f5f9;
+        }
+
         main {
             padding: 2rem 3rem;
-            max-width: 1400px;
-            margin: 0 auto;
             width: 100%;
         }
 
@@ -92,20 +94,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        .header-title h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+        .tab-content {
+            display: none;
+            width: 100%;
         }
 
-        .header-title p {
-            color: var(--text-muted);
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
         }
 
-        /* KPIs */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -121,27 +134,28 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
+        .kpi-card.insight {
+            border-left: 4px solid var(--primary);
+            background: #f0f7ff;
+        }
+
         .kpi-card h3 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
         }
 
         .kpi-value {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
         }
 
         .kpi-sub {
-            font-size: 0.8rem;
-            color: var(--success);
-            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
-        /* Chart Grid */
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -151,93 +165,68 @@
 
         .chart-card {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 24px;
+            padding: 1.5rem;
+            border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        .chart-card.full-width {
+        .chart-card.full {
             grid-column: span 2;
         }
 
         .chart-card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1rem;
             margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        canvas {
-            width: 100% !important;
-            height: auto !important;
-        }
-
-        /* Nube de palabras simplificada */
         .word-cloud {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            min-height: 200px;
-            padding: 1rem;
+            gap: 0.8rem;
+            min-height: 150px;
         }
 
-        .word {
-            transition: transform 0.2s;
-            cursor: default;
-        }
-
-        .word:hover {
-            transform: scale(1.1);
-        }
-
-        /* Alerts Table */
-        .alerts-section {
-            margin-top: 2rem;
-        }
-
-        .alerts-table {
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
         }
 
-        .alerts-table th,
-        .alerts-table td {
-            padding: 1rem 1.5rem;
-            text-align: left;
+        .data-table th,
+        .data-table td {
+            padding: 0.8rem;
             border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 0.9rem;
         }
 
-        .alerts-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            font-size: 0.85rem;
+        .data-table th {
+            background: #f8fafc;
             color: var(--text-muted);
         }
 
         .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 99px;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
-        .badge-danger {
+        .bg-red {
             background: #fee2e2;
             color: #ef4444;
         }
 
-        .badge-success {
+        .bg-green {
             background: #dcfce7;
             color: #10b981;
+        }
+
+        .detailed-report {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
         }
 
         @media (max-width: 1024px) {
@@ -256,10 +245,6 @@
             .chart-grid {
                 grid-template-columns: 1fr;
             }
-
-            .chart-card.full-width {
-                grid-column: span 1;
-            }
         }
     </style>
 </head>
@@ -270,108 +255,197 @@
             <div class="logo">minders.psico</div>
             <nav>
                 <ul>
-                    <li class="active">Vista General</li>
-                    <li>Pre-Test</li>
-                    <li>Post-Test</li>
-                    <li>Reporte PDF</li>
+                    <li onclick="showTab('general')" class="tab-btn active" id="btn-general">Vista Comparativa</li>
+                    <li onclick="showTab('pre')" class="tab-btn" id="btn-pre">Análisis Pre-Test</li>
+                    <li onclick="showTab('post')" class="tab-btn" id="btn-post">Análisis Post-Test</li>
                 </ul>
             </nav>
         </aside>
 
         <main>
+            <!-- TÍTULO DINÁMICO -->
             <header>
-                <div class="header-title">
-                    <h1>Dashboard de Impacto</h1>
-                    <p>Colegio Tandem • Seguimiento Marzo 2026</p>
+                <div>
+                    <h1 id="main-title">Impacto General: Colegio Tandem</h1>
+                    <p>Análisis Estratégico de Bienestar Escolar</p>
                 </div>
-                <div class="controls">
-                    <button id="sync-btn"
-                        style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; cursor: pointer;"
-                        onclick="alert('Conectando con Google Sheets API...')">Sincronizar Datos ⚙️</button>
-                </div>
+                <button onclick="location.reload()"
+                    style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer;">Actualizar
+                    🔄</button>
             </header>
 
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <h3>Edad Promedio</h3>
-                    <div class="kpi-value">15.4 años</div>
-                    <div class="kpi-sub">Estudiantes 9°-11°</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Participación</h3>
-                    <div class="kpi-value">124</div>
-                    <div class="kpi-sub">Respuestas recibidas</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Impacto General</h3>
-                    <div class="kpi-value" style="color: var(--success);">+24%</div>
-                    <div class="kpi-sub">Mejora en clima escolar</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Género Dominante</h3>
-                    <div class="kpi-value">Mujeres</div>
-                    <div class="kpi-sub">58% de la muestra</div>
-                </div>
-            </div>
-
-            <div class="chart-grid">
-                <!-- Comparativa Radar -->
-                <div class="chart-card">
-                    <h2>📊 Desplazamiento de Dominios (Pre vs Post)</h2>
-                    <canvas id="radarChart" height="300"></canvas>
-                </div>
-
-                <!-- Correlación por Curso -->
-                <div class="chart-card">
-                    <h2>🔍 Seguridad y Bienestar por Curso</h2>
-                    <canvas id="barChart" height="300"></canvas>
-                </div>
-
-                <!-- Nube de Palabras -->
-                <div class="chart-card">
-                    <h2>💬 "¿Cómo te sientes hoy?" (Frecuencia)</h2>
-                    <div class="word-cloud" id="wordCloud">
-                        <!-- Generado por JS -->
+            <!-- TABS -->
+            <div id="general" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="kpi-card insight">
+                        <h3>Insight Clave: Género</h3>
+                        <div class="kpi-value">Femenino</div>
+                        <div class="kpi-sub">Mejora +32% en Seguridad Vincular</div>
+                    </div>
+                    <div class="kpi-card insight">
+                        <h3>Foco de Atención</h3>
+                        <div class="kpi-value">Grado 11°</div>
+                        <div class="kpi-sub">Mayor impacto en Gestión de Calma</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Muestra Total</h3>
+                        <div class="kpi-value">124</div>
+                        <div class="kpi-sub">Estudiantes activos</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Crecimiento Promedio</h3>
+                        <div class="kpi-value" style="color: var(--success);">+22.5%</div>
+                        <div class="kpi-sub">Desplazamiento positivo</div>
                     </div>
                 </div>
 
-                <!-- Preguntas Ganadoras -->
-                <div class="chart-card">
-                    <h2>✨ "Preguntas Ganadoras" (Puntajes Max)</h2>
-                    <canvas id="horizontalBar" height="300"></canvas>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h2>📊 Desplazamiento por Dominios (Radar)</h2>
+                        <canvas id="radarGeneral"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h2>📈 Comparativa de Barras por Dominios</h2>
+                        <canvas id="barDominiosComp"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sentiment Analysis -->
-            <div class="chart-card full-width alerts-section">
-                <h2>⚠️ Análisis de Sentimientos y Alertas Críticas</h2>
-                <table class="alerts-table">
+            <!-- TAB PRE-TEST -->
+            <div id="pre" class="tab-content">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <h3>Puntaje Base</h3>
+                        <div class="kpi-value">2.8 / 5.0</div>
+                        <div class="kpi-sub">Clima inicial</div>
+                    </div>
+                    <div class="kpi-card insight">
+                        <h3>Riesgo Detectado</h3>
+                        <div class="kpi-value">Grado 9°</div>
+                        <div class="kpi-sub">Baja percepción de seguridad</div>
+                    </div>
+                </div>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h2>Barras por Dominio (Estado Inicial)</h2>
+                        <canvas id="barPreDominios"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h2>⚠️ Oportunidades de Mejora (Puntos Bajos)</h2>
+                        <canvas id="barOportunidadesPre"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB POST-TEST -->
+            <div id="post" class="tab-content">
+                <div class="kpi-grid">
+                    <div class="kpi-card" style="border-left-color: var(--success); background: #f0fdf4;">
+                        <h3>Puntaje Final</h3>
+                        <div class="kpi-value">4.2 / 5.0</div>
+                        <div class="kpi-sub">Consolidación de ambiente</div>
+                    </div>
+                    <div class="kpi-card insight">
+                        <h3>Mejor Resultado</h3>
+                        <div class="kpi-value">Masculino</div>
+                        <div class="kpi-sub">Mayor reducción de reacción impulsiva</div>
+                    </div>
+                </div>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h2>Barras por Dominio (Estado Actual)</h2>
+                        <canvas id="barPostDominios"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h2>✨ Preguntas Ganadoras (Éxitos)</h2>
+                        <canvas id="barGanadorasPost"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN COMÚN: ANALÍTICA CUALITATIVA -->
+            <div class="chart-grid" style="margin-top: 2rem;">
+                <div class="chart-card">
+                    <h2>💬 Mapa de Sentimientos (WordCloud)</h2>
+                    <div id="wordCloud" class="word-cloud"></div>
+                </div>
+                <div class="chart-card">
+                    <h2>🤖 Análisis de Sentimientos IA</h2>
+                    <table class="data-table">
+                        <tr>
+                            <th>Filtro</th>
+                            <th>Tendencia</th>
+                            <th>Estado</th>
+                        </tr>
+                        <tr>
+                            <td>Narrativas</td>
+                            <td>Aceptación y cambio</td>
+                            <td><span class="badge bg-green">Saludable</span></td>
+                        </tr>
+                        <tr>
+                            <td>Chismes</td>
+                            <td>Reducción de interés</td>
+                            <td><span class="badge bg-green">Mejorando</span></td>
+                        </tr>
+                        <tr>
+                            <td>Exclusión</td>
+                            <td>Persiste en subgrupos</td>
+                            <td><span class="badge bg-red">Atención</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- REPORTE DETALLADO INFERIOR -->
+            <div class="detailed-report">
+                <h2>📋 Reporte Detallado de Preguntas</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Desglose completo de todas las dimensiones
+                    evaluadas.</p>
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Estudiante/Curso</th>
-                            <th>Dominio afectado</th>
-                            <th>Comentario detectado</th>
-                            <th>Estado IA</th>
+                            <th>Pregunta / Dimensión</th>
+                            <th>Dominio</th>
+                            <th>Media Pre</th>
+                            <th>Media Post</th>
+                            <th>Variación</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Estudiante Anónimo (11°)</td>
-                            <td>Gestión Individual</td>
-                            <td>"Siento mucha presión por los exámenes y el ambiente es pesado..."</td>
-                            <td><span class="badge badge-danger">Alerta Crítica</span></td>
-                        </tr>
-                        <tr>
-                            <td>Estudiante Anónimo (10°)</td>
+                            <td>Seguridad en el salón</td>
                             <td>Seguridad y Clima</td>
-                            <td>"Ahora me atrevo a decir lo que pienso gracias al taller."</td>
-                            <td><span class="badge badge-success">Positivo</span></td>
+                            <td>2.4</td>
+                            <td>4.1</td>
+                            <td><strong style="color: var(--success);">+70%</strong></td>
                         </tr>
                         <tr>
-                            <td>Estudiante Anónimo (9°)</td>
+                            <td>Herramientas de calma</td>
+                            <td>Gestión Individual</td>
+                            <td>3.1</td>
+                            <td>4.5</td>
+                            <td><strong style="color: var(--success);">+45%</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Cuidado entre compañeros</td>
+                            <td>Pertenencia</td>
+                            <td>2.1</td>
+                            <td>3.8</td>
+                            <td><strong style="color: var(--success);">+80%</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Impacto de chismes</td>
                             <td>Dinámica Vincular</td>
-                            <td>"Los chismes han bajado un poco pero siguen ahí."</td>
-                            <td><span class="badge" style="background: #fef3c7; color: #d97706;">Neutral</span></td>
+                            <td>3.5</td>
+                            <td>2.2</td>
+                            <td><strong style="color: var(--success);">+37% (Reducción)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Evitación de conflictos</td>
+                            <td>Dinámica Vincular</td>
+                            <td>3.8</td>
+                            <td>2.9</td>
+                            <td><strong style="color: var(--success);">+23% (Mejora)</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -380,83 +454,96 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE GRÁFICAS (DATOS DE MUESTRA PARA VISUALIZACIÓN)
+        // Lógica de Tabs
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
 
-        // 1. Radar Chart: Dominios
-        new Chart(document.getElementById('radarChart'), {
+            const titles = {
+                'general': 'Impacto General: Colegio Tandem',
+                'pre': 'Diagnóstico Inicial (Pre-Test)',
+                'post': 'Resultados Post-Intervención'
+            };
+            document.getElementById('main-title').innerText = titles[tabId];
+        }
+
+        const doms = ['Gestión Ind.', 'Seguridad/Clima', 'Pertenencia', 'Vínculos'];
+
+        // 1. Radar General
+        new Chart(document.getElementById('radarGeneral'), {
             type: 'radar',
             data: {
-                labels: ['Gestión Individual', 'Seguridad y Clima', 'Pertenencia', 'Dinámica Vincular'],
-                datasets: [{
-                    label: 'Pre-Test',
-                    data: [2.5, 3.1, 2.8, 2.4],
-                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                    borderColor: 'rgba(99, 102, 241, 0.8)',
-                    pointBackgroundColor: 'rgba(99, 102, 241, 1)'
-                }, {
-                    label: 'Post-Test',
-                    data: [3.8, 4.5, 4.2, 3.9],
-                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
-                    borderColor: 'rgba(236, 72, 153, 0.8)',
-                    pointBackgroundColor: 'rgba(236, 72, 153, 1)'
-                }]
-            },
-            options: {
-                scales: {
-                    r: { beginAtZero: true, max: 5 }
-                }
+                labels: doms,
+                datasets: [
+                    { label: 'Pre', data: [2.5, 2.1, 2.8, 2.4], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.1)' },
+                    { label: 'Post', data: [4.2, 4.0, 4.3, 3.9], borderColor: '#ec4899', backgroundColor: 'rgba(236, 72, 153, 0.1)' }
+                ]
             }
         });
 
-        // 2. Bar Chart: Bienestar por curso
-        new Chart(document.getElementById('barChart'), {
+        // 2. Barras Comparativas
+        new Chart(document.getElementById('barDominiosComp'), {
             type: 'bar',
             data: {
-                labels: ['9°', '10°', '11°'],
-                datasets: [{
-                    label: 'Seguridad Percibida',
-                    data: [3.2, 3.8, 2.7],
-                    backgroundColor: ['#e0e7ff', '#c7d2fe', '#818cf8']
-                }]
+                labels: doms,
+                datasets: [
+                    { label: 'Pre', data: [2.5, 2.1, 2.8, 2.4], backgroundColor: '#cbd5e1' },
+                    { label: 'Post', data: [4.2, 4.0, 4.3, 3.9], backgroundColor: '#6366f1' }
+                ]
             }
         });
 
-        // 3. Horizontal Bar: Ganadoras
-        new Chart(document.getElementById('horizontalBar'), {
+        // 3. Barras Pre
+        new Chart(document.getElementById('barPreDominios'), {
             type: 'bar',
             data: {
-                labels: ['Habilidades Calma', 'Respeto Grupal', 'Seguridad Salón', 'Apoyo Pares'],
-                datasets: [{
-                    label: 'Puntajes Promedio',
-                    data: [4.6, 4.4, 4.1, 3.9],
-                    backgroundColor: '#10b981'
-                }]
-            },
-            options: {
-                indexAxis: 'y'
+                labels: doms,
+                datasets: [{ label: 'Puntaje Inicial', data: [2.5, 2.1, 2.8, 2.4], backgroundColor: '#f59e0b' }]
             }
         });
 
-        // 4. Word Cloud Simulation
-        const words = [
-            { t: 'Tranquilo', s: 30, c: '#6366f1' },
-            { t: 'Estresado', s: 15, c: '#ef4444' },
-            { t: 'Motivado', s: 25, c: '#10b981' },
-            { t: 'Segura', s: 20, c: '#ec4899' },
-            { t: 'Escuchado', s: 18, c: '#6366f1' },
-            { t: 'Cansado', s: 12, c: '#f59e0b' },
-            { t: 'Unión', s: 22, c: '#10b981' }
-        ];
+        // 4. Oportunidades Pre (Puntos más bajos)
+        new Chart(document.getElementById('barOportunidadesPre'), {
+            type: 'bar',
+            data: {
+                labels: ['Cuidado mutuo', 'Seguridad Salón', 'Manejo de Chismes'],
+                datasets: [{ label: 'Atención Crítica', data: [1.8, 2.1, 2.2], backgroundColor: '#ef4444' }]
+            },
+            options: { indexAxis: 'y' }
+        });
 
-        const container = document.getElementById('wordCloud');
-        words.forEach(w => {
-            const span = document.createElement('span');
-            span.innerText = w.t;
-            span.className = 'word';
-            span.style.fontSize = w.s + 'px';
-            span.style.color = w.c;
-            span.style.fontWeight = 'bold';
-            container.appendChild(span);
+        // 5. Barras Post
+        new Chart(document.getElementById('barPostDominios'), {
+            type: 'bar',
+            data: {
+                labels: doms,
+                datasets: [{ label: 'Puntaje Actual', data: [4.2, 4.0, 4.3, 3.9], backgroundColor: '#10b981' }]
+            }
+        });
+
+        // 6. Ganadoras Post
+        new Chart(document.getElementById('barGanadorasPost'), {
+            type: 'bar',
+            data: {
+                labels: ['Uso de Anclajes', 'Respeto Grupal', 'Edición de Guion'],
+                datasets: [{ label: 'Éxito', data: [4.8, 4.6, 4.3], backgroundColor: '#10b981' }]
+            },
+            options: { indexAxis: 'y' }
+        });
+
+        // WordCloud Simulation
+        const words = ['Paz', 'Tranquilo', 'Motivada', 'Cambio', 'Seguro', 'Unión', 'Escuchada'];
+        const cloud = document.getElementById('wordCloud');
+        words.forEach((w, i) => {
+            const s = document.createElement('span');
+            s.innerText = w;
+            s.style.fontSize = (20 + (i * 5)) + 'px';
+            s.style.color = i % 2 === 0 ? '#6366f1' : '#ec4899';
+            s.style.margin = '10px';
+            s.style.fontWeight = 'bold';
+            cloud.appendChild(s);
         });
     </script>
 </body>
