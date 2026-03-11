@@ -9,6 +9,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbw56BdFgTvtYUtRrOx8U2J0
 const baseQuestions = [
     { id: 'nombre', text: '¡Hola!<br><span class="sub-text">Para empezar, dinos tu nombre</span>', type: 'text', placeholder: 'Tu nombre aquí...' },
     { id: 'apellido', text: '<span class="sub-text">Y ahora, tus apellidos</span>', type: 'text', placeholder: 'Tus apellidos aquí...' },
+    { id: 'sexo', text: '¿Cuál es tu sexo?', type: 'select', options: ['Femenino', 'Masculino'] },
     { id: 'edad', text: '¿Qué edad tienes?', type: 'select', options: ['11', '12', '13', '14', '15', '16', '17', '18', '+18'] },
     { id: 'curso', text: '¿En qué curso estás actualmente?', type: 'select', options: ['6º', '7º', '8º', '9º', '10º', '11º'] },
     { id: 'tiempo_colegio', text: '¿Cuánto tiempo llevas en el colegio?', type: 'select', options: ['Este es mi primer año', '1 a 2 años', '3 a 5 años', 'Más de 5 años', 'Desde pequeño/a (Toda la vida)'] }
@@ -50,6 +51,18 @@ const specificQuestions = {
                 'Algo que me molesta, pero prefiero no decir nada.',
                 'Un problema serio que daña a las personas.'
             ]
+        },
+        {
+            id: 'impacto_chismes',
+            text: '¿Qué tanto impacta en ti lo que otros dicen de ti (chismes)?',
+            type: 'likert',
+            labels: { start: 'No me afecta en nada', end: 'Me afecta muchísimo' }
+        },
+        {
+            id: 'evitacion_conflictos',
+            text: '¿Prefieres no involucrarte en conflictos de compañeros para evitar problemas?',
+            type: 'likert',
+            labels: { start: 'No me importa involucrarme', end: 'Prefiero evitar problemas' }
         },
         {
             id: 'interes_companeros',
@@ -172,6 +185,18 @@ const specificQuestions = {
                 'Ahora soy más consciente del daño, aunque a veces es difícil no oír.',
                 'Mi comportamiento no ha cambiado.'
             ]
+        },
+        {
+            id: 'impacto_chismes_post',
+            text: '¿Qué tanto impacta en ti lo que otros dicen de ti (chismes)?',
+            type: 'likert',
+            labels: { start: 'No me afecta en nada', end: 'Me afecta muchísimo' }
+        },
+        {
+            id: 'evitacion_conflictos_post',
+            text: '¿Prefieres no involucrarte en conflictos de compañeros para evitar problemas?',
+            type: 'likert',
+            labels: { start: 'No me importa involucrarme', end: 'Prefiero evitar problemas' }
         },
         { id: 'sentimiento_post_taller', text: 'Describe en UNA palabra cómo te sientes tras haber participado en los espacios de taller:', type: 'text', placeholder: 'Tu palabra aquí...' },
         { id: 'espacio_libre', text: 'Este es tu espacio: ¿Hay algo más que quieras compartir con nosotros?', type: 'text', placeholder: 'Escribe aquí...' }
