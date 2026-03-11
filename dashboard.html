@@ -35,72 +35,109 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             line-height: 1.5;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* MOBILE FIRST LAYOUT */
         .dashboard-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
         }
 
+        /* NAVIGATION - MOBILE FIRST (Horizontal Scroll) */
         aside {
             background-color: var(--card-bg);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1rem;
             position: sticky;
             top: 0;
-            height: 100vh;
+            z-index: 1000;
         }
 
         .logo {
             font-weight: 600;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--primary);
             letter-spacing: -0.5px;
+            text-align: center;
         }
 
         nav ul {
             list-style: none;
+            display: flex;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        nav ul::-webkit-scrollbar {
+            display: none;
         }
 
         nav li {
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
             cursor: pointer;
             color: var(--text-muted);
             transition: 0.2s;
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            white-space: nowrap;
+            background: #f8fafc;
+            border: 1px solid var(--border);
         }
 
         nav li.active {
-            background-color: var(--primary-light);
-            color: var(--primary);
+            background-color: var(--primary);
+            color: white;
             font-weight: 600;
+            border-color: var(--primary);
         }
 
-        nav li:hover:not(.active) {
-            background: #f1f5f9;
+        .aside-footer {
+            display: none;
         }
 
+        /* MAIN CONTENT - MOBILE FIRST */
         main {
-            padding: 2rem 3rem;
+            padding: 1.5rem 1rem;
             width: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
         }
 
         header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
             margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .btn-print {
+            padding: 0.75rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .tab-content {
@@ -126,26 +163,26 @@
         }
 
         .section-separator {
-            margin: 3rem 0 1.5rem;
+            margin: 2.5rem 0 1.2rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--border);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-muted);
         }
 
-        /* KPIs */
+        /* GRIDS - MOBILE FIRST (Stacked) */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .kpi-card {
             background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 20px;
+            padding: 1.25rem;
+            border-radius: 18px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
@@ -156,75 +193,74 @@
         }
 
         .kpi-card h3 {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
         }
 
         .kpi-value {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            line-height: 1.2;
         }
 
         .kpi-sub {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-top: 0.5rem;
+            margin-top: 0.4rem;
         }
 
-        /* Charts */
         .chart-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .chart-card {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 24px;
+            padding: 1.25rem;
+            border-radius: 20px;
             border: 1px solid var(--border);
         }
 
-        .chart-card.full {
-            grid-column: span 2;
-        }
-
         .chart-card h2 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
+            text-align: center;
         }
 
-        /* Heatmap */
+        /* Heatmap Mobile (Scrollable) */
+        .heatmap-container {
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
         .heatmap-grid {
             display: grid;
-            grid-template-columns: 140px repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 1rem;
+            grid-template-columns: 100px repeat(4, 70px);
+            gap: 6px;
+            min-width: 380px;
         }
 
         .heatmap-cell {
-            height: 60px;
+            height: 45px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
             color: white;
         }
 
         .heatmap-label {
-            display: flex;
-            align-items: center;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 500;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
         }
 
         .h-low {
@@ -242,32 +278,26 @@
             color: #10b981;
         }
 
-        /* Word Clouds */
-        .cloud-container {
-            background: #f1f5f9;
-            border-radius: 20px;
-            padding: 2rem;
-            min-height: 250px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
+        /* Tables Mobile (Scrollable) */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
-        /* Tables */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            min-width: 500px;
         }
 
         .data-table th,
         .data-table td {
-            padding: 1.2rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--border);
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .data-table th {
@@ -275,40 +305,124 @@
             font-weight: 600;
         }
 
-        .badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .bg-red {
-            background: #fee2e2;
-            color: #ef4444;
-        }
-
-        .bg-green {
-            background: #dcfce7;
-            color: #10b981;
+        .cloud-container {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .speedometer {
-            width: 180px;
+            width: 160px;
             margin: 0 auto;
-            margin-bottom: -20px;
+            margin-bottom: -15px;
         }
 
-        @media (max-width: 1024px) {
+        /* DESKTOP REFINEMENTS (min-width: 1024px) */
+        @media (min-width: 1024px) {
             .dashboard-container {
-                grid-template-columns: 1fr;
+                flex-direction: row;
             }
 
             aside {
-                display: none;
+                width: 280px;
+                border-bottom: none;
+                border-right: 1px solid var(--border);
+                padding: 2.5rem 1.5rem;
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+
+            .logo {
+                font-size: 1.35rem;
+                text-align: left;
+            }
+
+            nav ul {
+                flex-direction: column;
+                overflow-x: visible;
+                gap: 0.5rem;
+                padding-bottom: 0;
+            }
+
+            nav li {
+                padding: 1rem;
+                font-size: 0.95rem;
+                background: transparent;
+                border: none;
+            }
+
+            nav li.active {
+                background-color: var(--primary-light);
+                color: var(--primary);
+            }
+
+            nav li:hover:not(.active) {
+                background: #f1f5f9;
+            }
+
+            .aside-footer {
+                display: block;
+                margin-top: auto;
+                padding: 1.25rem;
+                background: var(--primary-light);
+                border-radius: 16px;
+                font-size: 0.85rem;
+                color: var(--primary);
+            }
+
+            main {
+                padding: 3rem 4rem;
+                max-width: 1400px;
+            }
+
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+                margin-bottom: 3rem;
+            }
+
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
             }
 
             .chart-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+            }
+
+            .chart-card.full {
+                grid-column: span 2;
+            }
+
+            .chart-card {
+                padding: 2.5rem;
+            }
+
+            .heatmap-grid {
+                grid-template-columns: 140px repeat(4, 1fr);
+                min-width: 0;
+            }
+
+            .heatmap-cell {
+                height: 60px;
+                font-size: 1rem;
+            }
+
+            .heatmap-label {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -320,17 +434,13 @@
             <div class="logo">minders.psico</div>
             <nav>
                 <ul>
-                    <li onclick="showTab('contraste')" class="tab-btn active" id="btn-contraste">⚖️ Panel de Contraste
-                    </li>
-                    <li onclick="showTab('universo-pre')" class="tab-btn" id="btn-universo-pre">🔍 Universo Pre-Test
-                    </li>
-                    <li onclick="showTab('universo-post')" class="tab-btn" id="btn-universo-post">🏆 Universo Post-Test
-                    </li>
+                    <li onclick="showTab('contraste')" class="tab-btn active" id="btn-contraste">⚖️ Contraste</li>
+                    <li onclick="showTab('universo-pre')" class="tab-btn" id="btn-universo-pre">🔍 Universo Pre</li>
+                    <li onclick="showTab('universo-post')" class="tab-btn" id="btn-universo-post">🏆 Universo Post</li>
                 </ul>
             </nav>
-            <div
-                style="margin-top: auto; padding: 1rem; background: var(--primary-light); border-radius: 12px; font-size: 0.8rem; color: var(--primary);">
-                <strong>Colegio Tandem</strong><br>Reporte Estratégico 2026
+            <div class="aside-footer">
+                <strong>Colegio Tandem</strong><br>Análisis Estratégico 2026
             </div>
         </aside>
 
@@ -340,12 +450,10 @@
                     <h1 id="main-title">Contraste de Impacto</h1>
                     <p id="main-subtitle">Comparativa estratégica antes y después de la intervención</p>
                 </div>
-                <button onclick="window.print()"
-                    style="padding: 0.6rem 1.2rem; border-radius: 10px; border: 1px solid var(--border); background: white; cursor: pointer; font-weight: 600;">Descargar
-                    Reporte</button>
+                <button onclick="window.print()" class="btn-print">Descargar Reporte 📄</button>
             </header>
 
-            <!-- 1. PANEL DE CONTRASTE (COMPARATIVA) -->
+            <!-- 1. PANEL DE CONTRASTE -->
             <div id="contraste" class="tab-content active">
                 <div class="kpi-grid">
                     <div class="kpi-card highlight">
@@ -360,7 +468,7 @@
                         <div class="kpi-sub">Crecimiento en los 4 dominios</div>
                     </div>
                     <div class="kpi-card">
-                        <h3>Muestra Comparada</h3>
+                        <h3>Muestra Total</h3>
                         <div class="kpi-value">124</div>
                         <div class="kpi-sub">Estudiantes monitoreados</div>
                     </div>
@@ -376,44 +484,46 @@
                         <canvas id="barDominiosContraste"></canvas>
                     </div>
                     <div class="chart-card full">
-                        <h2>🌡️ Mapa de Calor de Clima por Curso (Estado Actual)</h2>
-                        <div class="heatmap-grid">
-                            <span></span><span class="heatmap-label">Gestión</span><span
-                                class="heatmap-label">Seguridad</span><span class="heatmap-label">Perten.</span><span
-                                class="heatmap-label">Vínculos</span>
-                            <span class="heatmap-label">9° Grado</span>
-                            <div class="heatmap-cell h-low">2.1</div>
-                            <div class="heatmap-cell h-low">1.9</div>
-                            <div class="heatmap-cell h-med">3.1</div>
-                            <div class="heatmap-cell h-low">2.2</div>
-                            <span class="heatmap-label">10° Grado</span>
-                            <div class="heatmap-cell h-med">3.2</div>
-                            <div class="heatmap-cell h-med">3.5</div>
-                            <div class="heatmap-cell h-high">4.2</div>
-                            <div class="heatmap-cell h-med">3.4</div>
-                            <span class="heatmap-label">11° Grado</span>
-                            <div class="heatmap-cell h-high">4.5</div>
-                            <div class="heatmap-cell h-med">3.8</div>
-                            <div class="heatmap-cell h-high">4.4</div>
-                            <div class="heatmap-cell h-high">4.1</div>
+                        <h2>🌡️ Heatmap de Clima (Actual)</h2>
+                        <div class="heatmap-container">
+                            <div class="heatmap-grid">
+                                <span></span><span class="heatmap-label">Gestión</span><span
+                                    class="heatmap-label">Seguridad</span><span
+                                    class="heatmap-label">Perten.</span><span class="heatmap-label">Vínculos</span>
+                                <span class="heatmap-label">9° Grado</span>
+                                <div class="heatmap-cell h-low">2.1</div>
+                                <div class="heatmap-cell h-low">1.9</div>
+                                <div class="heatmap-cell h-med">3.1</div>
+                                <div class="heatmap-cell h-low">2.2</div>
+                                <span class="heatmap-label">10° Grado</span>
+                                <div class="heatmap-cell h-med">3.2</div>
+                                <div class="heatmap-cell h-med">3.5</div>
+                                <div class="heatmap-cell h-high">4.2</div>
+                                <div class="heatmap-cell h-med">3.4</div>
+                                <span class="heatmap-label">11° Grado</span>
+                                <div class="heatmap-cell h-high">4.5</div>
+                                <div class="heatmap-cell h-med">3.8</div>
+                                <div class="heatmap-cell h-high">4.4</div>
+                                <div class="heatmap-cell h-high">4.1</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="section-separator">Voz del Estudiante: Evolución Narrativa</div>
+                <div class="section-separator">Evolución Narrativa</div>
                 <div class="chart-grid">
                     <div class="chart-card">
-                        <h2>Semanas 1-2 (Diagnóstico)</h2>
+                        <h2>Diagnóstico Inicial</h2>
                         <div class="cloud-container" id="cloudContrastePre"></div>
                     </div>
                     <div class="chart-card">
-                        <h2>Semana 6 (Consolidación)</h2>
+                        <h2>Consolidación Final</h2>
                         <div class="cloud-container" id="cloudContrastePost"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. UNIVERSO PRE-TEST (TODO EL PRE) -->
+            <!-- 2. UNIVERSO PRE-TEST -->
             <div id="universo-pre" class="tab-content">
                 <div class="kpi-grid">
                     <div class="kpi-card">
@@ -421,15 +531,15 @@
                         <div class="kpi-value">2.4 / 5.0</div>
                         <div class="kpi-sub">Media de bienestar inicial</div>
                     </div>
-                    <div class="kpi-card">
+                    <div class="kpi-card highlight">
                         <h3>Riesgo Máximo</h3>
-                        <div class="kpi-value">Grado 11°</div>
+                        <div class="kpi-value" style="color: var(--danger);">11° Grado</div>
                         <div class="kpi-sub">62% Normalización del Abuso</div>
                     </div>
                     <div class="kpi-card">
                         <h3>Afectación Género</h3>
                         <div class="kpi-value">Mujeres</div>
-                        <div class="kpi-sub">Mayor impacto sensible de chismes</div>
+                        <div class="kpi-sub">Mayor afectación por chismes</div>
                     </div>
                 </div>
 
@@ -439,151 +549,149 @@
                         <canvas id="barPreDominiosTotal"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>🚺 Género vs Afectación Chismes (Pre)</h2>
+                        <h2>🚺 Género vs Chismes (Pre)</h2>
                         <canvas id="barPreGenderGossip"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>🎭 Estado de Ánimo vs Seguridad (Correlación)</h2>
+                        <h2>🎭 Ánimo vs Seguridad</h2>
                         <canvas id="scatterPreMoodSecurity"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>⚠️ Frecuencia de Exclusión detectada</h2>
+                        <h2>⚠️ Frecuencia de Exclusión</h2>
                         <canvas id="barPreExclusion"></canvas>
                     </div>
                     <div class="chart-card full">
-                        <h2>💬 Nube de Palabras Crítica (Día 1)</h2>
+                        <h2>💬 Nubes de Voz (Día 1)</h2>
                         <div class="cloud-container" id="cloudPreTotal"></div>
                     </div>
                 </div>
 
                 <div class="section-separator">Alertas de IA (Diagnóstico)</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Caso</th>
-                            <th>Riesgo Detectado</th>
-                            <th>Extracto Comentario</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>9° Grado</td>
-                            <td><span class="badge bg-red">Crítico</span></td>
-                            <td>"Nadie hace nada si excluyen a alguien, mejor me callo."</td>
-                        </tr>
-                        <tr>
-                            <td>11° Grado</td>
-                            <td><span class="badge bg-red">Normalización</span></td>
-                            <td>"Hacer chismes es normal aquí, así pasamos el tiempo."</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Caso</th>
+                                <th>Riesgo Detectado</th>
+                                <th>Extracto Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>9° Grado</td>
+                                <td><span class="badge bg-red">Crítico</span></td>
+                                <td>"Nadie hace nada si excluyen a alguien, mejor me callo."</td>
+                            </tr>
+                            <tr>
+                                <td>11° Grado</td>
+                                <td><span class="badge bg-red">Normalización</span></td>
+                                <td>"Hacer chismes es normal aquí, así pasamos el tiempo."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- 3. UNIVERSO POST-TEST (TODO EL POST) -->
+            <!-- 3. UNIVERSO POST-TEST -->
             <div id="universo-post" class="tab-content">
                 <div class="kpi-grid">
                     <div class="kpi-card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
                         <h3>Puntaje Final</h3>
                         <div class="kpi-value">4.3 / 5.0</div>
-                        <div class="kpi-sub">Consolidación de ambiente +79%</div>
+                        <div class="kpi-sub">Consolidación de impacto +79%</div>
                     </div>
                     <div class="kpi-card">
                         <h3>Herramienta Estrella</h3>
                         <div class="kpi-value">Anclajes</div>
                         <div class="kpi-sub">88% de uso efectivo en crisis</div>
                     </div>
-                    <div class="kpi-card">
-                        <h3>Impacto Cruce</h3>
-                        <div class="kpi-value">Grado 11°</div>
-                        <div class="kpi-sub">Mayor cambio en empatía (Teatro Foro)</div>
+                    <div class="kpi-card highlight">
+                        <h3>Mayor Cambio</h3>
+                        <div class="kpi-value">11° Empatía</div>
+                        <div class="kpi-sub">Logro tras Teatro Foro</div>
                     </div>
                 </div>
 
                 <div class="chart-grid">
                     <div class="chart-card">
-                        <h2>📊 Resultados Finales por Dominio</h2>
+                        <h2>📊 Resultados Finales</h2>
                         <canvas id="barPostDominiosTotal"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>✨ Preguntas Ganadoras (Éxitos)</h2>
+                        <h2>✨ Preguntas Ganadoras</h2>
                         <canvas id="barPostWinnersTotal"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>🚀 De Reacción a Regulación (Post-Metodología)</h2>
+                        <h2>🚀 De Reacción a Regulación</h2>
                         <canvas id="barPostReactionRegTotal"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h2>📖 El "Guion" Post-Caja de Paletas</h2>
+                        <h2>📖 El "Guion" Post-Caja</h2>
                         <canvas id="linePostScriptTotal"></canvas>
-                    </div>
-                    <div class="chart-card full">
-                        <h2>💬 Nube de Palabras de Transformación</h2>
-                        <div class="cloud-container" id="cloudPostTotal"></div>
                     </div>
                 </div>
 
-                <div class="section-separator">Sentimientos IA y Feedback Directo</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Origen</th>
-                            <th>Estado IA</th>
-                            <th>Testimonio de Éxito</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Estudiante (10°)</td>
-                            <td><span class="badge bg-green">Transformado</span></td>
-                            <td>"He aprendido que yo edito mi guion, no el chisme."</td>
-                        </tr>
-                        <tr>
-                            <td>Estudiante (11°)</td>
-                            <td><span class="badge bg-green">Empático</span></td>
-                            <td>"El ejercicio de la espalda me hizo ver que todos cargamos algo."</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="section-separator">Sentimientos IA y Éxito</div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Origen</th>
+                                <th>Estado IA</th>
+                                <th>Testimonio de Éxito</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Estudiante (10°)</td>
+                                <td><span class="badge bg-green">Transformado</span></td>
+                                <td>"He aprendido que yo edito mi guion, no el chisme."</td>
+                            </tr>
+                            <tr>
+                                <td>Estudiante (11°)</td>
+                                <td><span class="badge bg-green">Empático</span></td>
+                                <td>"El ejercicio de la espalda me hizo ver que todos cargamos algo."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- FOOTER REPORTE DETALLADO (COMÚN) -->
+            <!-- FOOTER COMÚN -->
             <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-                <h2>📋 Reporte Granular de Preguntas</h2>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Dimensión</th>
-                            <th>Dominio</th>
-                            <th>Pre</th>
-                            <th>Post</th>
-                            <th>Impacto</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Seguridad Personal</td>
-                            <td>Seguridad y Clima</td>
-                            <td>2.4</td>
-                            <td>4.1</td>
-                            <td><strong style="color:var(--success);">+70%</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Herramientas Calma</td>
-                            <td>Gestión Individual</td>
-                            <td>3.1</td>
-                            <td>4.5</td>
-                            <td><strong style="color:var(--success);">+45%</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Vínculo Grupal</td>
-                            <td>Pertenencia</td>
-                            <td>2.1</td>
-                            <td>3.8</td>
-                            <td><strong style="color:var(--success);">+81%</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2>📋 Detalle Granular</h2>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Dimensión</th>
+                                <th>Pre</th>
+                                <th>Post</th>
+                                <th>Impacto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Seguridad Personal</td>
+                                <td>2.4</td>
+                                <td>4.1</td>
+                                <td><strong style="color:var(--success);">+70%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Herramientas Calma</td>
+                                <td>3.1</td>
+                                <td>4.5</td>
+                                <td><strong style="color:var(--success);">+45%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Vínculo Grupal</td>
+                                <td>2.1</td>
+                                <td>3.8</td>
+                                <td><strong style="color:var(--success);">+81%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -596,21 +704,23 @@
             document.getElementById('btn-' + id).classList.add('active');
 
             const config = {
-                'contraste': { t: 'Contraste de Impacto', st: 'Comparativa estratégica antes y después de la intervención' },
-                'universo-pre': { t: 'Universo Pre-Test', st: 'Análisis detallado de la línea base y diagnósticos iniciales' },
-                'universo-post': { t: 'Universo Post-Test', st: 'Resultados, éxitos metodológicos y consolidación de impacto' }
+                'contraste': { t: 'Contraste de Impacto', st: 'Comparativa estratégica antes y después' },
+                'universo-pre': { t: 'Universo Pre-Test', st: 'Análisis detallado de la línea base' },
+                'universo-post': { t: 'Universo Post-Test', st: 'Resultados y consolidación final' }
             };
             document.getElementById('main-title').innerText = config[id].t;
             document.getElementById('main-subtitle').innerText = config[id].st;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        const labelsDom = ['Gestión Individual', 'Seguridad y Clima', 'Pertenencia', 'Vínculos'];
+        const labelsDom = ['Gestión', 'Seguridad', 'Pertenencia', 'Vínculos'];
 
-        // --- CHARTS CONTRASTE ---
+        // --- CHARTS ---
         new Chart(document.getElementById('speedoImpacto'), {
             type: 'doughnut', data: { datasets: [{ data: [42, 58], backgroundColor: ['#ef4444', '#f1f5f9'], circumference: 180, rotation: 270 }] },
             options: { cutout: '80%', plugins: { tooltip: { enabled: false } } }
         });
+
         new Chart(document.getElementById('radarContraste'), {
             type: 'radar', data: {
                 labels: labelsDom,
@@ -620,6 +730,7 @@
                 ]
             }
         });
+
         new Chart(document.getElementById('barDominiosContraste'), {
             type: 'bar', data: {
                 labels: labelsDom,
@@ -630,54 +741,57 @@
             }
         });
 
-        // --- CHARTS PRE ---
         new Chart(document.getElementById('barPreDominiosTotal'), {
-            type: 'bar', data: { labels: labelsDom, datasets: [{ label: 'Nivel Inicial', data: [2.5, 2.1, 2.8, 2.4], backgroundColor: '#f59e0b' }] }
+            type: 'bar', data: { labels: labelsDom, datasets: [{ label: 'Inicial', data: [2.5, 2.1, 2.8, 2.4], backgroundColor: '#f59e0b' }] }
         });
+
         new Chart(document.getElementById('barPreGenderGossip'), {
-            type: 'bar', data: { labels: ['Hombres', 'Mujeres'], datasets: [{ label: 'Afectación Chisme', data: [2.8, 4.5], backgroundColor: ['#6366f1', '#ec4899'] }] }
+            type: 'bar', data: { labels: ['Hombres', 'Mujeres'], datasets: [{ label: 'Afectación', data: [2.8, 4.5], backgroundColor: ['#6366f1', '#ec4899'] }] }
         });
+
         new Chart(document.getElementById('scatterPreMoodSecurity'), {
             type: 'scatter', data: { datasets: [{ label: 'Estudiantes', data: [{ x: 1, y: 1.2 }, { x: 2, y: 2 }, { x: 4, y: 3.5 }, { x: 5, y: 4 }], backgroundColor: '#6366f1' }] }
         });
+
         new Chart(document.getElementById('barPreExclusion'), {
-            type: 'bar', data: { labels: ['Poca', 'Moderada', 'Frecuente'], datasets: [{ label: 'Nivel Exclusión', data: [20, 45, 35], backgroundColor: '#ef4444' }] }
+            type: 'bar', data: { labels: ['Poca', 'Moderada', 'Frecuente'], datasets: [{ label: 'Exclusión', data: [20, 45, 35], backgroundColor: '#ef4444' }] }
         });
 
-        // --- CHARTS POST ---
         new Chart(document.getElementById('barPostDominiosTotal'), {
-            type: 'bar', data: { labels: labelsDom, datasets: [{ label: 'Nivel Final', data: [4.2, 4.4, 4.3, 4.1], backgroundColor: '#10b981' }] }
+            type: 'bar', data: { labels: labelsDom, datasets: [{ label: 'Final', data: [4.2, 4.4, 4.3, 4.1], backgroundColor: '#10b981' }] }
         });
+
         new Chart(document.getElementById('barPostWinnersTotal'), {
-            type: 'bar', data: { labels: ['Palabras que Suman', 'Anclajes Calma', 'Edición Guion'], datasets: [{ label: 'Efectividad %', data: [91, 88, 82], backgroundColor: '#10b981' }] },
+            type: 'bar', data: { labels: ['Palabras', 'Anclajes', 'Guion'], datasets: [{ label: 'Éxito %', data: [91, 88, 82], backgroundColor: '#10b981' }] },
             options: { indexAxis: 'y' }
         });
+
         new Chart(document.getElementById('barPostReactionRegTotal'), {
             type: 'bar', data: {
-                labels: ['Explota/Reacciona', 'Usa Técnicas'],
+                labels: ['Reacción', 'Regulación'],
                 datasets: [
                     { label: 'Pre', data: [65, 35], backgroundColor: '#cbd5e1' },
                     { label: 'Post', data: [15, 85], backgroundColor: '#10b981' }
                 ]
             }
         });
+
         new Chart(document.getElementById('linePostScriptTotal'), {
-            type: 'line', data: { labels: ['Bajo', 'Medio', 'Alto'], datasets: [{ label: 'Transformación Guion', data: [2, 3.5, 4.8], borderColor: '#ec4899' }] }
+            type: 'line', data: { labels: ['Bajo', 'Medio', 'Alto'], datasets: [{ label: 'Guion', data: [2, 3.5, 4.8], borderColor: '#ec4899' }] }
         });
 
-        // Words
         function fill(id, list, color) {
             const el = document.getElementById(id);
             if (!el) return;
             list.forEach(w => {
                 const s = document.createElement('span');
-                s.innerText = w; s.style.fontSize = (15 + Math.random() * 20) + 'px';
-                s.style.fontWeight = 'bold'; s.style.color = color; s.style.margin = '8px';
+                s.innerText = w; s.style.fontSize = (14 + Math.random() * 16) + 'px';
+                s.style.fontWeight = 'bold'; s.style.color = color; s.style.margin = '6px';
                 el.appendChild(s);
             });
         }
-        const preW = ['Solo', 'Chismes', 'Miedo', 'Cansanci0', 'Presión', 'Inseguro', 'Invisible'];
-        const postW = ['Paz', 'Escuchada', 'Seguro', 'Unión', 'Anclajes', 'Respeto', 'Empatía'];
+        const preW = ['Solo', 'Chismes', 'Miedo', 'Estrés', 'Presión', 'Inseguro'];
+        const postW = ['Paz', 'Escuchada', 'Seguro', 'Unión', 'Anclajes', 'Respeto'];
         fill('cloudContrastePre', preW, '#64748b');
         fill('cloudContrastePost', postW, '#6366f1');
         fill('cloudPreTotal', preW, '#ef4444');
