@@ -502,7 +502,7 @@
                     <h1 id="main-title">Contraste de Impacto</h1>
                     <p id="main-subtitle">Comparativa estratégica antes y después de la intervención</p>
                 </div>
-                <button onclick="location.reload()" class="btn-sync">Sincronizar Datos ⚙️</button>
+                <button onclick="sincronizarDatos()" class="btn-sync" id="btn-sync">Sincronizar Datos ⚙️</button>
             </header>
 
             <!-- CONTENIDO DE TABS -->
@@ -671,6 +671,35 @@
             document.getElementById('overlay').classList.remove('active');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwo5wexH5zSP_LBst33D0BB1By8VVKXfLa_pNebGGxemu1-hSJkdKcLNrNJCqnavsWIdA/exec';
+
+        async function sincronizarDatos() {
+            const btn = document.getElementById('btn-sync');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Sincronizando... ⏳';
+            btn.disabled = true;
+
+            try {
+                // Request a Google Sheets vía Apps Script
+                const response = await fetch(GAS_URL);
+                const data = await response.json();
+                
+                console.log("Datos recibidos de la hoja TANDEM:", data);
+                alert("¡Conexión exitosa a Google Sheets!\nRevisa la consola (F12) para ver la estructura de los datos y así poder vincularlos con los gráficos.");
+                
+                // NOTA: Una vez que veas la estructura en consola, aquí mapearás los valores a los gráficos:
+                // myChart.data.datasets[0].data = data.valoresNuevos;
+                // myChart.update();
+                
+            } catch (error) {
+                console.error("Error conectando a TANDEM:", error);
+                alert("Error de conexión. Asegúrate de que en Google Apps Script exista una función doGet() que devuelva los datos de la hoja en JSON (y esté desplegada como aplicación web pública).");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         const lD = ['Gestión', 'Seguridad', 'Perten.', 'Vínculos'];
