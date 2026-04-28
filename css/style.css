@@ -15,6 +15,13 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Outfit', sans-serif;
     background: #fdfcff;
@@ -23,9 +30,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: hidden;
     position: relative;
     padding: 1rem;
+    box-sizing: border-box;
 }
 
 .bg-blobs {
@@ -80,6 +87,12 @@ body {
     justify-content: center;
 }
 
+#survey-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .progress-container {
     position: fixed;
     top: 0;
@@ -114,6 +127,17 @@ body {
     justify-content: flex-start;
     align-items: center;
     transition: all 0.4s ease;
+}
+
+@keyframes shake-anim {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+.shake-anim {
+    animation: shake-anim 0.4s ease-in-out;
 }
 
 .branding {
@@ -436,6 +460,33 @@ h2 {
     gap: 0.8rem;
     width: 100%;
     padding-top: 1rem;
+}
+
+.buttons-row {
+    display: flex;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 420px;
+    align-items: stretch;
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--primary-color);
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid var(--primary-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back:hover {
+    background: var(--primary-sh);
 }
 
 .btn-primary {

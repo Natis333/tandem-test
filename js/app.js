@@ -31,19 +31,25 @@ const specificQuestions = {
         },
         {
             id: 'seguridad_ser_yo',
-            text: '¿Qué tan seguro/a te sientes de ser tú mismo/a en el salón sin miedo a críticas o etiquetas?',
+            text: '¿Qué tan seguro/a te sientes de ser tú mismo/a en el colegio sin miedo a críticas o etiquetas?',
             type: 'likert',
             labels: { start: 'Nada seguro/a, me cuido mucho', end: 'Totalmente seguro/a' }
         },
         {
-            id: 'seguridad_salon',
-            text: '¿Qué tan seguro/a te sientes en tu salón de clases (física y emocionalmente)?',
+            id: 'seguridad_fisica_colegio',
+            text: 'Siento que mi presencia física y mi espacio personal son respetados por todos dentro del aula (Seguridad Física)',
+            type: 'likert',
+            labels: { start: 'Muy inseguro/a', end: 'Totalmente seguro/a' }
+        },
+        {
+            id: 'seguridad_emocional_colegio',
+            text: 'Siento que puedo ser yo mismo/a en clase sin que eso me traiga consecuencias sociales o burlas (Seguridad Emocional)',
             type: 'likert',
             labels: { start: 'Muy inseguro/a', end: 'Totalmente seguro/a' }
         },
         {
             id: 'percepcion_chisme',
-            text: 'En mi salón, el chisme o hablar mal de otros se siente como:',
+            text: 'En el colegio, el chisme o hablar mal de otros se siente como:',
             type: 'choice',
             options: [
                 'Una forma de pasar el tiempo o divertirse.',
@@ -51,6 +57,18 @@ const specificQuestions = {
                 'Algo que me molesta, pero prefiero no decir nada.',
                 'Un problema serio que daña a las personas.'
             ]
+        },
+        {
+            id: 'respeto_hacia_otros',
+            text: '¿Sientes que tratas con respeto a tus compañeros en tu día a día?',
+            type: 'likert',
+            labels: { start: 'Casi nunca', end: 'Siempre los respeto' }
+        },
+        {
+            id: 'normalizacion_irrespeto',
+            text: '¿Sientes que en el colegio se ve como "normal" faltarle el respeto o tener comportamientos inadecuados hacia otros?',
+            type: 'likert',
+            labels: { start: 'No es normal', end: 'Totalmente normalizado' }
         },
         {
             id: 'impacto_chismes',
@@ -215,6 +233,11 @@ function showQuestion() {
     document.getElementById('current-number').innerText = currentIndex + 1;
     document.getElementById('question-text').innerHTML = q.text;
     container.innerHTML = '';
+    
+    const prevBtn = document.getElementById('prev-btn');
+    if (prevBtn) {
+        prevBtn.style.display = currentIndex > 0 ? 'flex' : 'none';
+    }
 
     if (q.type === 'text') {
         const input = document.createElement('input');
@@ -318,18 +341,44 @@ function saveStep(val) {
     results[fullSurvey[currentIndex].id] = val;
 }
 
+function handlePrev() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        animateTransition();
+    }
+}
+
 function handleNext() {
     const q = fullSurvey[currentIndex];
 
     if (q.type === 'text') {
-        const val = document.getElementById('text-input').value;
-        if (!val && !q.id.includes('narrativa')) return;
+        const input = document.getElementById('text-input');
+        const val = input.value.trim();
+        if (!val && q.id !== 'pre_opcional' && q.id !== 'espacio_libre') {
+            input.style.borderBottomColor = '#ef4444';
+            setTimeout(() => input.style.borderBottomColor = 'var(--primary-color)', 1000);
+            return;
+        }
         saveStep(val);
     } else if (q.type === 'select') {
         const wrapper = document.getElementById('active-custom-select');
         const val = wrapper ? wrapper.dataset.value : null;
-        if (!val) return;
+        if (!val) {
+            if (wrapper) {
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                trigger.style.borderBottomColor = '#ef4444';
+                setTimeout(() => trigger.style.borderBottomColor = 'var(--primary-color)', 1000);
+            }
+            return;
+        }
         saveStep(val);
+    } else {
+        if (!results[q.id]) {
+            const container = document.getElementById('input-container');
+            container.classList.add('shake-anim');
+            setTimeout(() => container.classList.remove('shake-anim'), 400);
+            return;
+        }
     }
 
     if (currentIndex < fullSurvey.length - 1) {

@@ -33,7 +33,10 @@
                     <div id="input-container" class="input-container"></div>
 
                     <div id="controls" class="controls">
-                        <button id="next-btn" class="btn-primary" onclick="handleNext()">Continuar</button>
+                        <div class="buttons-row">
+                            <button id="prev-btn" class="btn-back" onclick="handlePrev()" style="display: none;">&larr;</button>
+                            <button id="next-btn" class="btn-primary" onclick="handleNext()">Continuar</button>
+                        </div>
                         <p class="press-enter">o presiona <strong>Enter</strong></p>
                     </div>
                 </div>
