@@ -125,12 +125,37 @@ function setView(viewMode, evt) {
     applyFiltersAndRender();
 }
 
+function extractDemo(d, type) {
+    const vals = Object.values(d).map(String);
+    if (type === 'edad') {
+        let match = vals.find(v => v.match(/^(1[1-9]|20|\+18)$/));
+        return match || null;
+    }
+    if (type === 'sexo') {
+        let match = vals.find(v => {
+            let l = v.toLowerCase();
+            return l === 'femenino' || l === 'masculino';
+        });
+        return match ? (match.toLowerCase().startsWith('f') ? 'Femenino' : 'Masculino') : null;
+    }
+    if (type === 'curso') {
+        let match = vals.find(v => v.match(/^[6-9]º|10º|11º$/));
+        return match || null;
+    }
+    return null;
+}
+
 function applyFiltersAndRender() {
     filteredData = rawData.filter(d => {
-        const cCurso = currentFilter.curso === 'Todos' || String(d.curso) === String(currentFilter.curso);
-        const genRaw = d.sexo || d['Género'];
-        const cGen = currentFilter.genero === 'Todos' || String(genRaw).toLowerCase().includes(currentFilter.genero.toLowerCase());
-        const cEdad = currentFilter.edad === 'Todos' || String(d.edad) === String(currentFilter.edad);
+        const dCurso = extractDemo(d, 'curso');
+        const cCurso = currentFilter.curso === 'Todos' || dCurso === currentFilter.curso;
+        
+        const dSexo = extractDemo(d, 'sexo');
+        const cGen = currentFilter.genero === 'Todos' || dSexo === currentFilter.genero;
+        
+        const dEdad = extractDemo(d, 'edad');
+        const cEdad = currentFilter.edad === 'Todos' || dEdad === currentFilter.edad;
+        
         return cCurso && cGen && cEdad;
     });
 
@@ -166,11 +191,7 @@ function renderMicroCharts(data, phase) {
         let counts = {};
         data.forEach(d => {
             let val = keyFn(d);
-            if(val) {
-                if(String(val).toLowerCase().startsWith('f')) val = 'Femenino';
-                if(String(val).toLowerCase().startsWith('m')) val = 'Masculino';
-                counts[val] = (counts[val] || 0) + 1;
-            }
+            if(val) counts[val] = (counts[val] || 0) + 1;
         });
         
         if(microCharts[canvasId]) microCharts[canvasId].destroy();
@@ -184,16 +205,41 @@ function renderMicroCharts(data, phase) {
         });
     };
 
-    renderPie(`micro-${phase}-edad`, d => d.edad, ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#14b8a6', '#f43f5e']);
-    renderPie(`micro-${phase}-sexo`, d => d.sexo || d['Género'], ['#ec4899', '#3b82f6']); // Pink for F, Blue for M
-    renderPie(`micro-${phase}-curso`, d => d.curso, ['#14b8a6', '#f43f5e', '#eab308', '#3b82f6', '#8b5cf6', '#f97316']);
+    renderPie(`micro-${phase}-edad`, d => extractDemo(d, 'edad'), ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#14b8a6', '#f43f5e']);
+    renderPie(`micro-${phase}-sexo`, d => extractDemo(d, 'sexo'), ['#ec4899', '#3b82f6']);
+    renderPie(`micro-${phase}-curso`, d => extractDemo(d, 'curso'), ['#14b8a6', '#f43f5e', '#eab308', '#3b82f6', '#8b5cf6', '#f97316']);
 }
 
 function getColumnForPhase(qConfig, data, phase) {
     if(data.length === 0) return null;
-    const targetId = phase === 'pre' ? qConfig.id_pre : qConfig.id_post;
-    if(!targetId) return null;
-    return targetId;
+    const keys = Object.keys(data[0]);
+
+    let strongKeywords = [];
+    if(qConfig.id_pre === 'estado_animo') strongKeywords = phase === 'pre' ? ['ánimo predominante', 'estado de ánimo'] : ['ánimo predominante', 'estado de ánimo'];
+    else if(qConfig.id_pre === 'sentimiento_una_palabra') strongKeywords = phase === 'pre' ? ['una palabra'] : ['una palabra'];
+    else if(qConfig.id_pre === 'seguridad_ser_yo') strongKeywords = phase === 'pre' ? ['seguro/a te sientes de ser tú mismo/a', 'etiquetas'] : ['participar en los talleres', 'seguro/a te sientes ahora'];
+    else if(qConfig.id_pre === 'seguridad_fisica_colegio') strongKeywords = phase === 'pre' ? ['presencia física', 'espacio personal'] : ['preocupación y el cuidado'];
+    else if(qConfig.id_pre === 'seguridad_emocional_colegio') strongKeywords = phase === 'pre' ? ['consecuencias sociales', 'burlas'] : ['anclajes de calma'];
+    else if(qConfig.id_pre === 'percepcion_chisme') strongKeywords = phase === 'pre' ? ['el chisme o hablar mal de otros se siente'] : ['guion de tu vida', 'editar ese guion'];
+    else if(qConfig.id_pre === 'respeto_hacia_otros') strongKeywords = phase === 'pre' ? ['tratas con respeto a tus compañeros'] : ['dar y recibir palabras'];
+    else if(qConfig.id_pre === 'normalizacion_irrespeto') strongKeywords = phase === 'pre' ? ['normal" faltarle el respeto', 'comportamientos inadecuados'] : ['respeto y la unión del grupo mejoraron'];
+    else if(qConfig.id_pre === 'impacto_chismes') strongKeywords = phase === 'pre' ? ['impacta en ti lo que otros dicen de ti'] : ['reacción más probable', 'escuchas un chisme pesado'];
+    else if(qConfig.id_pre === 'evitacion_conflictos') strongKeywords = phase === 'pre' ? ['evitar problemas', 'involucrarte en conflictos'] : ['impacta en ti lo que otros dicen de ti', 'chismes']; 
+    else if(qConfig.id_pre === 'interes_companeros') strongKeywords = phase === 'pre' ? ['compañeros de curso les importa'] : ['evitar problemas', 'involucrarte en conflictos'];
+    else if(qConfig.id_pre === 'exclusion_presenciada') strongKeywords = phase === 'pre' ? ['personas que son ignoradas o excluidas'] : [];
+    else if(qConfig.id_pre === 'reaccion_malentendido') strongKeywords = phase === 'pre' ? ['ocurriera un malentendido en el grupo'] : [];
+    else if(qConfig.id_pre === 'herramientas_calma') strongKeywords = phase === 'pre' ? ['herramientas tienes para mantener la calma'] : [];
+    else if(qConfig.id_pre === 'accion_frustracion') strongKeywords = phase === 'pre' ? ['sientes frustrado/a o atacado/a'] : [];
+    else if(qConfig.id_pre === 'pre_opcional') strongKeywords = phase === 'pre' ? ['algo más que quieras decirnos'] : ['este es tu espacio', 'compartir con nosotros'];
+
+    for(let k of keys) {
+        let lowerKey = k.toLowerCase();
+        if(strongKeywords.some(kw => lowerKey.includes(kw.toLowerCase()))) {
+            return k;
+        }
+    }
+    
+    return null;
 }
 
 function renderCustomChart(qConfig, data, container, canvasId, phase) {
