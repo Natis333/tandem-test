@@ -187,6 +187,11 @@ function applyFiltersAndRender() {
 }
 
 function renderMicroCharts(data, phase) {
+    // Register datalabels plugin globally if available
+    if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+    }
+
     const renderPie = (canvasId, keyFn, colors) => {
         let counts = {};
         data.forEach(d => {
@@ -201,7 +206,17 @@ function renderMicroCharts(data, phase) {
         microCharts[canvasId] = new Chart(ctx, {
             type: 'doughnut',
             data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: colors }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels:{boxWidth:10, font:{size:10}} } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { position: 'right', labels:{boxWidth:10, font:{size:10}} },
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold', size: 12 },
+                        formatter: (value) => value > 0 ? value : ''
+                    }
+                } 
+            }
         });
     };
 
