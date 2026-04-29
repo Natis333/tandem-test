@@ -9,116 +9,140 @@
     <style>
         :root { --primary: #6366f1; --primary-light: #e0e7ff; --danger: #ef4444; --success: #10b981; --text-main: #1e293b; --text-muted: #64748b; --bg-body: #f8fafc; --card-bg: #ffffff; --border: #e2e8f0; }
         * { box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 2rem; }
-        .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-        .btn-sync { background: var(--primary); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(99,102,241,0.2); }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 1rem; overflow-x: hidden; }
         
-        .filters { display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); flex-wrap: wrap; }
+        @media(min-width: 768px) { body { padding: 2rem; } }
+
+        .header-main { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; gap: 1rem; position: relative; }
+        @media(min-width: 768px) {
+            .header-main .btn-sync { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+        }
+        .btn-sync { background: var(--primary); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(99,102,241,0.2); transition: 0.2s; display: flex; align-items: center; gap: 0.5rem;}
+        .btn-sync:hover { opacity: 0.9; transform: translateY(-1px); }
+        
+        .filters { display: flex; align-items: center; gap: 1rem; background: var(--card-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); flex-wrap: wrap; }
+        .filters label { color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 0.5rem; margin-right: 0.5rem; }
         .filters select { padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); font-family: 'Outfit', sans-serif; font-weight: 500; outline: none; background: #f8fafc; cursor: pointer; }
 
         .tabs-nav { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0px; overflow-x: auto; }
-        .tab-link { background: none; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--text-muted); border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+        .tab-link { background: none; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--text-muted); border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: 0.2s; }
         .tab-link.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--primary-light); border-radius: 8px 8px 0 0; }
         
-        .tab-content { display: none; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
+        .espejo-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; width: 100%; align-items: start; }
+        
+        @media(max-width: 768px) {
+            .espejo-layout { grid-template-columns: 1fr; }
+            .col-post { margin-top: 1rem; }
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); }
+        .col { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; height: 100%; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); width: 100%; }
+        .card.pre-header { background: #fffbf0; border-color: #fef08a; margin-bottom: 0; }
+        .card.post-header { background: #f0fdf4; border-color: #bbf7d0; margin-bottom: 0; }
+        
         .card h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; color: var(--text-main); }
+        .card-header-noborder h2 { border-bottom: none; margin-bottom: 0.5rem; padding-bottom: 0; }
         
-        .alert-list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; font-size: 0.9rem; }
-        .alert-list li { padding: 0.5rem; border-bottom: 1px solid var(--border); }
-        
-        .cloud-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; min-height: 200px; background: #f1f5f9; border-radius: 12px; padding: 1.5rem; gap: 0.5rem; }
-        .ai-box { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 1.2rem; border-radius: 8px; font-size: 0.95rem; line-height: 1.6; }
+        .chart-wrapper { position: relative; height: 250px; width: 100%; }
+        .micro-wrapper { position: relative; height: 180px; width: 100%; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        @media(max-width: 768px) { body { padding: 1rem; } .grid { grid-template-columns: 1fr; } }
+        .ai-box { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 1.2rem; border-radius: 8px; font-size: 0.95rem; line-height: 1.6; margin-top: 1rem; }
+        .alert-list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; font-size: 0.9rem; }
+        .alert-list li { padding: 0.8rem; border-bottom: 1px solid var(--border); color: var(--danger); font-weight: 500; }
+        .alert-list li:last-child { border-bottom: none; }
+
+        .ai-container { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 2rem; align-items: start; }
+        @media(max-width: 768px) { .ai-container { grid-template-columns: 1fr; } }
+        
     </style>
 </head>
 <body>
     <div class="header-main">
-        <div>
-            <h1 style="margin-bottom:0.2rem; font-size: 1.8rem;">🧠 Dashboard Integral de Resultados</h1>
-            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Análisis general y específico por fase (Pre/Post)</p>
+        <div class="title-container" style="text-align: center; width: 100%;">
+            <h1 style="margin-bottom:0.2rem; font-size: 1.8rem; color: var(--primary); text-transform: uppercase; letter-spacing: 2px;">MINDERS.PSICO × TANDEM</h1>
+            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Dashboard Integral de Resultados (Pre/Post)</p>
         </div>
         <button id="btn-sync" class="btn-sync" onclick="sincronizarDatos()">Sincronizar Datos Automáticamente ⚙️</button>
     </div>
 
     <div class="filters">
-        <label style="color:var(--primary); font-weight: 600;">🤖 Filtros Inteligentes:</label>
+        <label>🤖 Filtros Inteligentes:</label>
+        <select id="filtro-dominio" onchange="updateFilters()" style="display:none; background:#e0e7ff; color:#3730a3; font-weight:bold;">
+            <option value="Todos">🔍 Todos los Dominios</option>
+            <option value="Seguridad">🛡️ Seguridad Física/Emocional</option>
+            <option value="Clima">🗣️ Clima, Respeto y Chisme</option>
+            <option value="Regulacion">🧘 Regulación y Conflictos</option>
+        </select>
         <select id="filtro-curso" onchange="updateFilters()"><option value="Todos">Todos los Cursos</option></select>
         <select id="filtro-genero" onchange="updateFilters()"><option value="Todos">Todos los Géneros</option></select>
+        <select id="filtro-edad" onchange="updateFilters()"><option value="Todos">Todas las Edades</option></select>
     </div>
 
     <!-- TABS -->
     <div class="tabs-nav">
-        <button class="tab-link active" onclick="openTab(event, 'tab-contraste')">⚖️ Dashboard Global / Insights</button>
-        <button class="tab-link" onclick="openTab(event, 'tab-pre')">🔍 Resultados Universo PRE</button>
-        <button class="tab-link" onclick="openTab(event, 'tab-post')">🏆 Resultados Universo POST</button>
+        <button class="tab-link active" onclick="setView('general', event)">⚖️ Vista General (Espejo)</button>
+        <button class="tab-link" onclick="setView('dominios', event)">🎯 Vista por Dominios</button>
     </div>
 
-    <!-- CONTENIDO CONTRASTE -->
-    <div id="tab-contraste" class="tab-content active">
-        <div class="grid" style="grid-template-columns: 1fr 2.5fr;">
-            <div class="card" style="border-left: 4px solid var(--danger);">
-                <h2>🚨 Alertas Críticas (IA)</h2>
-                <ul id="alertasCriticas" class="alert-list"><li style="color:var(--text-muted);">Sincroniza para cargar alertas...</li></ul>
+    <!-- MAIN ESPEJO LAYOUT -->
+    <div class="espejo-layout">
+        <!-- COLUMNA PRE -->
+        <div class="col col-pre">
+            <div class="card pre-header card-header-noborder">
+                <h2>🔍 Resultados Universo PRE</h2>
+                <p style="margin:0; font-size:0.9rem;">Diagnóstico antes de la intervención.</p>
             </div>
-            <div class="card" style="border-left: 4px solid var(--primary);">
-                <h2>💡 Resumen Ejecutivo (IA)</h2>
-                <div id="resumenEjecutivo" class="ai-box"> Sincroniza desde el Google Sheet para generar insights globales. </div>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <h2>📈 Resiliencia Gral (Cruzado Edad)</h2>
-                <canvas id="chartCruzadoEdad"></canvas>
-            </div>
-            <div class="card">
-                <h2>📊 Exclusión Percibida (Distribución)</h2>
-                <canvas id="chartPercepcion"></canvas>
-            </div>
-            <div class="card">
-                <h2>🛡️ Seguridad Gral por Curso</h2>
-                <canvas id="chartCruzadoCurso"></canvas>
+            
+            <div id="pre-questions" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+            
+            <!-- MICRO CHARTS PRE (Demografía) -->
+            <div class="card" style="margin-top: auto;">
+                <h2>📊 Demografía PRE</h2>
+                <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">GÉNERO</h4><div class="micro-wrapper"><canvas id="micro-pre-sexo"></canvas></div></div>
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">EDAD</h4><div class="micro-wrapper"><canvas id="micro-pre-edad"></canvas></div></div>
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">CURSO</h4><div class="micro-wrapper"><canvas id="micro-pre-curso"></canvas></div></div>
+                </div>
             </div>
         </div>
 
+        <!-- COLUMNA POST -->
+        <div class="col col-post">
+            <div class="card post-header card-header-noborder">
+                <h2>🏆 Resultados Universo POST</h2>
+                <p style="margin:0; font-size:0.9rem;">Impacto después de los talleres.</p>
+            </div>
+            
+            <div id="post-questions" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+            
+            <!-- MICRO CHARTS POST (Demografía) -->
+            <div class="card" style="margin-top: auto;">
+                <h2>📊 Demografía POST</h2>
+                <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">GÉNERO</h4><div class="micro-wrapper"><canvas id="micro-post-sexo"></canvas></div></div>
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">EDAD</h4><div class="micro-wrapper"><canvas id="micro-post-edad"></canvas></div></div>
+                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">CURSO</h4><div class="micro-wrapper"><canvas id="micro-post-curso"></canvas></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INSIGHTS AI -->
+    <div class="ai-container">
         <div class="card">
-            <h2>☁️ Nube de Análisis de Sentimiento</h2>
-            <div class="cloud-container" id="nubePalabrasData"></div>
+            <h2>💡 Resumen Ejecutivo e Insights (IA)</h2>
+            <div id="resumenEjecutivo" class="ai-box">
+                Sincroniza desde el Google Sheet para generar insights globales de la intervención.
+            </div>
         </div>
-    </div>
-
-    <!-- CONTENIDO PRE -->
-    <div id="tab-pre" class="tab-content">
-        <div class="card" style="margin-bottom:1.5rem; background:#fffbf0; border-color:#fef08a;">
-            <h2 style="margin-bottom:0.5rem; border-bottom:none;">Resultados Pre-Intervención</h2>
-            <p style="margin:0; font-size:0.9rem;">Estas gráficas de barras se generan automáticamente para CADA PREGUNTA del PRE test dependiendo de lo que reciba la hoja de cálculo.</p>
+        <div class="card" style="border-left: 4px solid var(--danger);">
+            <h2>🚨 Alertas Críticas</h2>
+            <ul id="alertasCriticas" class="alert-list">
+                <li style="color:var(--text-muted); border:none;">Sincroniza para cargar alertas...</li>
+            </ul>
         </div>
-        <div class="grid" id="container-pre-charts"></div>
-    </div>
-
-    <!-- CONTENIDO POST -->
-    <div id="tab-post" class="tab-content">
-        <div class="card" style="margin-bottom:1.5rem; background:#f0fdf4; border-color:#bbf7d0;">
-            <h2 style="margin-bottom:0.5rem; border-bottom:none;">Resultados Post-Intervención</h2>
-            <p style="margin:0; font-size:0.9rem;">Estas gráficas de barras se generan automáticamente para CADA PREGUNTA del POST test dependiendo de lo que reciba la hoja de cálculo.</p>
-        </div>
-        <div class="grid" id="container-post-charts"></div>
     </div>
 
     <script src="js/dashboard-logic.js"></script>
-    <script>
-        function openTab(evt, tabName) {
-            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-            document.querySelectorAll(".tab-link").forEach(el => el.classList.remove("active"));
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-    </script>
 </body>
 </html>
