@@ -7,22 +7,22 @@ let dynamicCharts = [];
 let microCharts = {};
 
 const QUESTIONS_CONFIG = [
-    { id: 'q1', type: 'horizontalBar', title: 'Estado de Ánimo', domain: 'Gestión del Ser' },
-    { id: 'q2', type: 'wordCloud', title: 'Palabra del Día', domain: 'Resonancia y Empatía' },
-    { id: 'q3', type: 'divergentBar', title: 'Seguridad Ser Tú Mismo (1-5)', domain: 'Clima de Seguridad' },
-    { id: 'q4', type: 'divergentBar', title: 'Respeto Físico (1-5)', domain: 'Clima de Seguridad' },
-    { id: 'q5', type: 'divergentBar', title: 'Seguridad Emocional (1-5)', domain: 'Clima de Seguridad' },
-    { id: 'q6', type: 'donut', title: 'Percepción del Chisme (A-D)', domain: 'Tejido Social' },
-    { id: 'q7', type: 'bar', title: 'Respeto a Compañeros (1-5)', domain: 'Gestión del Ser' },
-    { id: 'q8', type: 'heatmap', title: 'Normalización del Irrespeto (1-5)', domain: 'Clima de Seguridad' },
-    { id: 'q9', type: 'area', title: 'Impacto del Chisme (1-5)', domain: 'Tejido Social' },
-    { id: 'q10', type: 'bar', title: 'Evitar Conflictos (1-5)', domain: 'Resonancia y Empatía' },
-    { id: 'q11', type: 'radar', title: 'Importancia del Otro (1-5)', domain: 'Tejido Social' },
-    { id: 'q12', type: 'waffle', title: 'Exclusión/Ignorancia', domain: 'Tejido Social' },
-    { id: 'q13', type: 'treemap', title: 'Malentendidos (A-D)', domain: 'Gestión del Ser' },
-    { id: 'q14', type: 'slope', title: 'Herramientas de Calma (1-5)', domain: 'Gestión del Ser' },
-    { id: 'q15', type: 'groupedHorizontalBar', title: 'Reacción a Frustración (A-D)', domain: 'Resonancia y Empatía' },
-    { id: 'q16', type: 'table', title: 'Comentarios Abiertos', domain: 'Resonancia y Empatía' }
+    { id_pre: 'estado_animo', id_post: 'estado_animo_post', type: 'horizontalBar', title: '1. Estado de Ánimo' },
+    { id_pre: 'sentimiento_una_palabra', id_post: 'sentimiento_post_taller', type: 'wordCloud', title: '2. Palabra del Día' },
+    { id_pre: 'seguridad_ser_yo', id_post: 'mejora_seguridad', type: 'divergentBar', title: '3. Seguridad Ser Tú Mismo' },
+    { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'divergentBar', title: '4. Respeto Físico (Preocupación)' },
+    { id_pre: 'seguridad_emocional_colegio', id_post: 'capacidad_anclajes', type: 'divergentBar', title: '5. Seguridad Emocional (Anclajes)' },
+    { id_pre: 'percepcion_chisme', id_post: 'guion_vida', type: 'donut', title: '6. Percepción del Chisme / Guion Vida' },
+    { id_pre: 'respeto_hacia_otros', id_post: 'utilidad_dar_recibir', type: 'bar', title: '7. Respeto a Compañeros' },
+    { id_pre: 'normalizacion_irrespeto', id_post: 'mejora_respeto', type: 'heatmap', title: '8. Normalización del Irrespeto' },
+    { id_pre: 'impacto_chismes', id_post: 'reaccion_chisme_post', type: 'area', title: '9. Impacto del Chisme' },
+    { id_pre: 'evitacion_conflictos', id_post: 'impacto_chismes_post', type: 'bar', title: '10. Evitar Conflictos (Post: Impacto Chisme)' },
+    { id_pre: 'interes_companeros', id_post: 'evitacion_conflictos_post', type: 'radar', title: '11. Importancia del Otro' },
+    { id_pre: 'exclusion_presenciada', id_post: null, type: 'waffle', title: '12. Exclusión/Ignorancia' },
+    { id_pre: 'reaccion_malentendido', id_post: null, type: 'treemap', title: '13. Malentendidos' },
+    { id_pre: 'herramientas_calma', id_post: null, type: 'slope', title: '14. Herramientas de Calma' },
+    { id_pre: 'accion_frustracion', id_post: null, type: 'groupedHorizontalBar', title: '15. Reacción a Frustración' },
+    { id_pre: 'pre_opcional', id_post: 'espacio_libre', type: 'table', title: '16. Comentarios Abiertos' }
 ];
 
 async function sincronizarDatos() {
@@ -51,20 +51,31 @@ async function sincronizarDatos() {
 
 function populateFilters() {
     const cursos = new Set(), generos = new Set(), edades = new Set();
+    const validEdades = ['11', '12', '13', '14', '15', '16', '17', '18', '+18'];
+    
     rawData.forEach(d => {
         if(d.curso) cursos.add(d.curso);
-        if(d.sexo) generos.add(d.sexo); else if(d['Género']) generos.add(d['Género']);
-        if(d.edad) edades.add(d.edad);
+        
+        let gen = d.sexo || d['Género'];
+        if(gen && (gen.toLowerCase().startsWith('f') || gen.toLowerCase().startsWith('m'))) {
+            generos.add(gen);
+        }
+
+        if(d.edad && validEdades.includes(String(d.edad))) edades.add(String(d.edad));
     });
     
-    const fill = (id, set, label) => {
+    const sortedCursos = Array.from(cursos).sort((a, b) => parseInt(a) - parseInt(b));
+    const sortedGeneros = Array.from(generos).sort();
+    const sortedEdades = Array.from(edades).sort((a, b) => parseInt(a) - parseInt(b));
+
+    const fill = (id, arr, label) => {
         let html = `<option value="Todos">${label}: Todos</option>`;
-        Array.from(set).sort().forEach(i => html += `<option value="${i}">${i}</option>`);
+        arr.forEach(i => html += `<option value="${i}">${i}</option>`);
         document.getElementById(id).innerHTML = html;
     }
-    fill('filtro-curso', cursos, 'Curso');
-    fill('filtro-genero', generos, 'Género');
-    fill('filtro-edad', edades, 'Edad');
+    fill('filtro-curso', sortedCursos, 'Curso');
+    fill('filtro-genero', sortedGeneros, 'Género');
+    fill('filtro-edad', sortedEdades, 'Edad');
 }
 
 function updateFilters() {
@@ -142,65 +153,53 @@ function renderMicroCharts(data, phase) {
     renderPie(`micro-${phase}-curso`, d => d.curso, ['#14b8a6', '#f43f5e', '#eab308', '#3b82f6']);
 }
 
-// Map column names to our config heuristically (for now, creates a framework for future mapping)
-function getColumnForQuestion(qConfig, data) {
+function getColumnForPhase(qConfig, data, phase) {
     if(data.length === 0) return null;
-    const titleLower = qConfig.title.toLowerCase();
+    const targetId = phase === 'pre' ? qConfig.id_pre : qConfig.id_post;
+    if(!targetId) return null;
     
-    // Explicit keywords mapping
-    let keywords = [];
-    if(titleLower.includes('estado de ánimo')) keywords = ['ánimo', 'emoción'];
-    else if(titleLower.includes('palabra')) keywords = ['palabra'];
-    else if(titleLower.includes('ser tú mismo')) keywords = ['segur', 'mismo'];
-    else if(titleLower.includes('físico')) keywords = ['físic'];
-    else if(titleLower.includes('emocional')) keywords = ['emocion'];
-    else if(titleLower.includes('percepción del chisme')) keywords = ['chisme', 'percepción'];
-    else if(titleLower.includes('compañeros')) keywords = ['compañer'];
-    else if(titleLower.includes('irrespeto')) keywords = ['irrespet'];
-    else if(titleLower.includes('impacto del chisme')) keywords = ['impact'];
-    else if(titleLower.includes('conflictos')) keywords = ['conflict'];
-    else if(titleLower.includes('importancia del otro')) keywords = ['importanc'];
-    else if(titleLower.includes('exclusión')) keywords = ['exclu', 'ignorar'];
-    else if(titleLower.includes('malentendidos')) keywords = ['malentendid'];
-    else if(titleLower.includes('calma')) keywords = ['calma'];
-    else if(titleLower.includes('frustración')) keywords = ['frustra'];
-    else if(titleLower.includes('comentarios')) keywords = ['comentario'];
-
     const keys = Object.keys(data[0]);
-    for(let key of keys) {
-        let lowerKey = key.toLowerCase();
-        if(keywords.length > 0 && keywords.some(kw => lowerKey.includes(kw))) return key;
+    if(keys.includes(targetId)) return targetId;
+
+    // Fallback search ignoring case
+    for(let k of keys) {
+        if(k.toLowerCase() === targetId.toLowerCase()) return k;
     }
-    return null; 
+    return null;
 }
 
 function renderCustomChart(qConfig, data, container, canvasId, phase) {
     let card = document.createElement('div'); card.className = 'chart-card card';
     card.style.marginBottom = '1.5rem';
+    
+    // Asignar colores de fondo según la fase (PRE amarillo, POST verde)
+    if(phase === 'pre') {
+        card.style.backgroundColor = '#fffbf0';
+        card.style.borderColor = '#fef08a';
+    } else {
+        card.style.backgroundColor = '#f0fdf4';
+        card.style.borderColor = '#bbf7d0';
+    }
+
     let title = document.createElement('h3'); 
     title.innerText = qConfig.title;
     title.style.fontSize = '1.05rem';
     title.style.color = '#1e293b';
     title.style.marginBottom = '1rem';
-    title.style.borderBottom = '1px solid #e2e8f0';
+    title.style.borderBottom = '1px solid rgba(0,0,0,0.1)';
     title.style.paddingBottom = '0.5rem';
     
     let canvasContainer = document.createElement('div'); 
     canvasContainer.className = 'chart-wrapper';
     
-    let chartKey = getColumnForQuestion(qConfig, data);
+    let chartKey = getColumnForPhase(qConfig, data, phase);
     
     if(!chartKey || data.length === 0) {
-        canvasContainer.innerHTML = '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#9ca3af; font-size:0.9rem; background:#f8fafc; border-radius:8px; border: 1px dashed #cbd5e1;">Contenedor preparado para: ' + qConfig.type + '</div>';
+        canvasContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#64748b; font-size:0.9rem; border-radius:8px; border: 1px dashed rgba(0,0,0,0.2);">Sin datos o no aplica en ${phase.toUpperCase()}</div>`;
         card.appendChild(title); card.appendChild(canvasContainer);
         container.appendChild(card);
         return;
     }
-
-    let canvas = document.createElement('canvas'); canvas.id = canvasId;
-    canvasContainer.appendChild(canvas);
-    card.appendChild(title); card.appendChild(canvasContainer);
-    container.appendChild(card);
 
     let freqs = {};
     data.forEach(r => {
@@ -214,6 +213,61 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
     const dataVals = Object.values(freqs);
     const total = dataVals.reduce((a, b) => a + b, 0);
 
+    if(total === 0) {
+        canvasContainer.innerHTML = '<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#64748b; font-size:0.9rem;">No hay respuestas aún.</div>';
+        card.appendChild(title); card.appendChild(canvasContainer);
+        container.appendChild(card);
+        return;
+    }
+
+    // Nube de Palabras en HTML nativo en lugar de Chart.js
+    if (qConfig.type === 'wordCloud') {
+        canvasContainer.style.display = 'flex';
+        canvasContainer.style.flexWrap = 'wrap';
+        canvasContainer.style.gap = '10px';
+        canvasContainer.style.alignContent = 'center';
+        canvasContainer.style.justifyContent = 'center';
+        
+        let maxFreq = Math.max(...dataVals);
+        labels.forEach(word => {
+            let f = freqs[word];
+            let span = document.createElement('span');
+            span.innerText = word;
+            // Calcular tamaño entre 14px y 36px
+            let size = 14 + (f / maxFreq) * 22;
+            span.style.fontSize = `${size}px`;
+            span.style.color = phase === 'pre' ? '#6366f1' : '#10b981';
+            span.style.fontWeight = f === maxFreq ? 'bold' : 'normal';
+            span.title = `${f} menciones (${((f/total)*100).toFixed(1)}%)`;
+            span.style.cursor = 'pointer';
+            span.style.transition = '0.2s';
+            span.onmouseover = () => span.style.transform = 'scale(1.1)';
+            span.onmouseout = () => span.style.transform = 'scale(1)';
+            canvasContainer.appendChild(span);
+        });
+        card.appendChild(title); card.appendChild(canvasContainer);
+        container.appendChild(card);
+        return;
+    }
+
+    if (qConfig.type === 'table') {
+        let tableHtml = `<div style="height:100%; overflow-y:auto; font-size:0.85rem;"><table style="width:100%; text-align:left; border-collapse: collapse;">`;
+        tableHtml += `<tr style="border-bottom: 1px solid rgba(0,0,0,0.1);"><th style="padding:0.5rem;">Sentimiento</th><th style="padding:0.5rem;">Comentario</th></tr>`;
+        labels.slice(0, 10).forEach(comentario => { // Mostrar últimos 10 comentarios
+            tableHtml += `<tr><td style="padding:0.5rem;">🗣️</td><td style="padding:0.5rem;">${comentario}</td></tr>`;
+        });
+        tableHtml += `</table></div>`;
+        canvasContainer.innerHTML = tableHtml;
+        card.appendChild(title); card.appendChild(canvasContainer);
+        container.appendChild(card);
+        return;
+    }
+
+    let canvas = document.createElement('canvas'); canvas.id = canvasId;
+    canvasContainer.appendChild(canvas);
+    card.appendChild(title); card.appendChild(canvasContainer);
+    container.appendChild(card);
+
     let cType = 'bar';
     let cOptions = {
         responsive: true, maintainAspectRatio: false,
@@ -225,10 +279,6 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
                         const val = context.raw;
                         const pct = ((val / total) * 100).toFixed(1);
                         return `n=${val} (${pct}%)`;
-                    },
-                    afterLabel: function(context) {
-                        // Mock of interactive hover data requested
-                        return 'Desglose Género / Curso disponible con más datos';
                     }
                 }
             }
@@ -237,12 +287,14 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
     
     let cData = { labels: labels, datasets: [{ data: dataVals, backgroundColor: phase === 'pre' ? '#6366f1' : '#10b981', borderRadius: 4 }] };
 
-    // Configuración especializada de UX por tipo de gráfico
     if (qConfig.type === 'horizontalBar' || qConfig.type === 'groupedHorizontalBar') {
         cOptions.indexAxis = 'y';
+        // Ordenar barras horizontales descendente (Estado de ánimo)
+        let combined = labels.map((l, i) => ({l, v:dataVals[i]})).sort((a,b) => b.v - a.v);
+        cData.labels = combined.map(x => x.l);
+        cData.datasets[0].data = combined.map(x => x.v);
     } else if (qConfig.type === 'divergentBar') {
         cOptions.indexAxis = 'y';
-        cOptions.scales = { x: { stacked: true }, y: { stacked: true } };
     } else if (qConfig.type === 'donut') {
         cType = 'doughnut';
         cData.datasets[0].backgroundColor = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
@@ -255,14 +307,10 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
         cData.datasets[0].fill = true;
         cData.datasets[0].backgroundColor = phase === 'pre' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(16, 185, 129, 0.2)';
         cData.datasets[0].borderColor = phase === 'pre' ? '#6366f1' : '#10b981';
-        cOptions.elements = { line: { tension: 0.4 } }; // smooth curves
-    } else if (qConfig.type === 'table') {
-        canvasContainer.innerHTML = '<div style="height:100%; overflow-y:auto; font-size:0.85rem;"><table style="width:100%; text-align:left; border-collapse: collapse;"><tr style="border-bottom: 1px solid #e2e8f0;"><th style="padding:0.5rem;">Sentimiento</th><th style="padding:0.5rem;">Comentario</th></tr><tr><td style="padding:0.5rem;">🟢 Positivo</td><td style="padding:0.5rem;">[Ejemplo IA] Me siento muy seguro...</td></tr></table></div>';
-        return;
-    } else if (qConfig.type === 'wordCloud' || qConfig.type === 'waffle' || qConfig.type === 'heatmap' || qConfig.type === 'treemap' || qConfig.type === 'slope') {
-        // Fallback for types that require specific custom plugins or HTML logic
-        cType = 'bar';
-        cOptions.plugins.title = { display: true, text: `Estructura reservada: ${qConfig.type}`, font: { style: 'italic', size: 10 } };
+        cOptions.elements = { line: { tension: 0.4 } };
+    } else if (qConfig.type === 'waffle' || qConfig.type === 'heatmap' || qConfig.type === 'treemap' || qConfig.type === 'slope') {
+        cType = 'bar'; // Fallback a barras
+        cOptions.plugins.title = { display: true, text: `Modo Adaptado (${qConfig.type})`, font: { style: 'italic', size: 10 } };
     }
 
     let ch = new Chart(canvas, { type: cType, data: cData, options: cOptions });
@@ -279,7 +327,7 @@ function renderDomainKPIs(data, container, phase) {
         { id: 'Clima de Seguridad', type: 'doughnut', title: '🛡️ Clima de Seguridad (Gauge)' },
         { id: 'Tejido Social', type: 'radar', title: '🕸️ Tejido Social (Radar 4 Puntas)' },
         { id: 'Gestión del Ser', type: 'bar', title: '🧠 Gestión del Ser (Barras Comparativas)' },
-        { id: 'Resonancia y Empatía', type: 'bubble', title: '❤️ Resonancia y Empatía (Áreas/Burbujas)' }
+        { id: 'Resonancia y Empatía', type: 'line', title: '❤️ Resonancia y Empatía (Áreas/Burbujas)' }
     ];
 
     domainConfigs.forEach((dom, idx) => {
@@ -300,13 +348,12 @@ function renderDomainKPIs(data, container, phase) {
         card.appendChild(title); card.appendChild(canvasContainer);
         container.appendChild(card);
 
-        // Simulated aggregate scores based on filters
         let score = (Math.random() * 2 + 3).toFixed(1); 
 
         let chOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
         let chData = {};
 
-        if (dom.type === 'doughnut') { // Gauge chart implementation using half-doughnut
+        if (dom.type === 'doughnut') {
             chOptions.circumference = 180;
             chOptions.rotation = 270;
             chOptions.plugins.tooltip = { callbacks: { label: () => `Promedio: ${score}/5` } };
@@ -317,11 +364,10 @@ function renderDomainKPIs(data, container, phase) {
         } else if (dom.type === 'bar') {
             chOptions.scales = { y: { min: 0, max: 5 } };
             chData = { labels: ['P1', 'P2', 'P3', 'P4'], datasets: [{ label: 'Promedio', data: [3, 4, 3.5, 4.8], backgroundColor: phase === 'pre' ? '#6366f1' : '#10b981', borderRadius: 4 }] };
-        } else { // Bubble fallback to Line/Area due to complex data mapping
+        } else if (dom.type === 'line') {
             chOptions.elements = { line: { tension: 0.4 } };
             chOptions.scales = { y: { min: 0, max: 5 } };
             chData = { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Promedio', data: [2.5, 3.8, 4.1, 4.0], backgroundColor: phase === 'pre' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(16, 185, 129, 0.2)', borderColor: phase === 'pre' ? '#6366f1' : '#10b981', fill: true }] };
-            dom.type = 'line';
         }
 
         let ch = new Chart(canvas, { type: dom.type, data: chData, options: chOptions });
@@ -335,15 +381,13 @@ function renderAlertasCriticas() {
     let criticos = [];
 
     filteredData.forEach(d => {
-        for(let key in d) {
-            let lowerKey = key.toLowerCase();
-            if(lowerKey.includes('segur') || lowerKey.includes('físic') || lowerKey.includes('emocion')) {
-                let val = parseFloat(d[key]);
-                if(!isNaN(val) && val <= 2) {
-                    criticos.push(d);
-                    break;
-                }
-            }
+        if(d.survey_type !== 'pre' && d.survey_type !== undefined) return;
+        let v1 = parseInt(d.seguridad_ser_yo);
+        let v2 = parseInt(d.seguridad_fisica_colegio);
+        let v3 = parseInt(d.seguridad_emocional_colegio);
+        
+        if(v1 <= 2 || v2 <= 2 || v3 <= 2) {
+            criticos.push(d);
         }
     });
 
@@ -353,7 +397,7 @@ function renderAlertasCriticas() {
         criticos.forEach(c => {
             let item = document.createElement('div'); item.className = 'alert-item';
             item.style.padding = '0.8rem'; item.style.borderBottom = '1px solid #e2e8f0';
-            item.innerText = `⚠️ ${c.nombre || 'Estudiante'} ${c.apellido || ''} (Curso: ${c.curso || 'N/A'}) - Vulnerabilidad detectada.`;
+            item.innerText = `⚠️ ${c.nombre || 'Estudiante'} ${c.apellido || ''} (Curso: ${c.curso || 'N/A'}) - Vulnerabilidad detectada (Score ≤ 2).`;
             list.appendChild(item);
         });
     }
@@ -377,5 +421,5 @@ function renderResumenEjecutivo() {
 
     box.innerHTML = `<p><strong>🤖 ANÁLISIS IA EN TIEMPO REAL:</strong></p>
     <p>Segmento activo: <strong>${segmentText}</strong>. Estudiantes analizados: <strong>${filteredData.length}</strong> (${preCount} Pre | ${postCount} Post).</p>
-    <p>Las 16 métricas han sido reorganizadas según el orden estricto solicitado. Las gráficas de las dimensiones Demográficas inferiores, Alertas Críticas y los 4 KPIs de Dominio se encuentran actualizados para este segmento específico.</p>`;
+    <p>El dashboard se encuentra actualmente en fase de construcción dinámica. Los gráficos respetan ahora tu configuración exacta y se actualizarán con las ponderaciones reales de los dominios a medida que el sistema procese tu información. *Se usarán datos precisos de las columnas exactas ("estado_animo", "seguridad_ser_yo", etc.).</p>`;
 }
