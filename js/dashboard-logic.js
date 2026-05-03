@@ -7,7 +7,7 @@ let dynamicCharts = [];
 let microCharts = {};
 
 const QUESTIONS_CONFIG = [
-    { id_pre: 'estado_animo', id_post: 'estado_animo_post', type: 'horizontalBar', title: '1. Estado de Ánimo' },
+    { id_pre: 'estado_animo', id_post: 'estado_animo_post', type: 'moodPie', title: '1. Estado de Ánimo' },
     { id_pre: 'sentimiento_una_palabra', id_post: 'sentimiento_post_taller', type: 'wordCloud', title: '2. Palabra del Día' },
     { id_pre: 'seguridad_ser_yo', id_post: 'mejora_seguridad', type: 'divergentBar', title: '3. Seguridad Ser Tú Mismo (1-5)' },
     { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'divergentBar', title: '4. Respeto Físico (1-5)' },
@@ -227,29 +227,41 @@ function renderMicroCharts(data, phase) {
 
 function getColumnForPhase(qConfig, data, phase) {
     if(data.length === 0) return null;
+    const targetId = phase === 'pre' ? qConfig.id_pre : qConfig.id_post;
+    if(!targetId) return null;
+    
     const keys = Object.keys(data[0]);
 
-    let strongKeywords = [];
-    if(qConfig.id_pre === 'estado_animo') strongKeywords = phase === 'pre' ? ['ánimo predominante', 'estado de ánimo'] : ['ánimo predominante', 'estado de ánimo'];
-    else if(qConfig.id_pre === 'sentimiento_una_palabra') strongKeywords = phase === 'pre' ? ['una palabra'] : ['una palabra'];
-    else if(qConfig.id_pre === 'seguridad_ser_yo') strongKeywords = phase === 'pre' ? ['seguro/a te sientes de ser tú mismo/a', 'etiquetas'] : ['participar en los talleres', 'seguro/a te sientes ahora'];
-    else if(qConfig.id_pre === 'seguridad_fisica_colegio') strongKeywords = phase === 'pre' ? ['presencia física', 'espacio personal'] : ['preocupación y el cuidado'];
-    else if(qConfig.id_pre === 'seguridad_emocional_colegio') strongKeywords = phase === 'pre' ? ['consecuencias sociales', 'burlas'] : ['anclajes de calma'];
-    else if(qConfig.id_pre === 'percepcion_chisme') strongKeywords = phase === 'pre' ? ['el chisme o hablar mal de otros se siente'] : ['guion de tu vida', 'editar ese guion'];
-    else if(qConfig.id_pre === 'respeto_hacia_otros') strongKeywords = phase === 'pre' ? ['tratas con respeto a tus compañeros'] : ['dar y recibir palabras'];
-    else if(qConfig.id_pre === 'normalizacion_irrespeto') strongKeywords = phase === 'pre' ? ['normal" faltarle el respeto', 'comportamientos inadecuados'] : ['respeto y la unión del grupo mejoraron'];
-    else if(qConfig.id_pre === 'impacto_chismes') strongKeywords = phase === 'pre' ? ['impacta en ti lo que otros dicen de ti'] : ['reacción más probable', 'escuchas un chisme pesado'];
-    else if(qConfig.id_pre === 'evitacion_conflictos') strongKeywords = phase === 'pre' ? ['evitar problemas', 'involucrarte en conflictos'] : ['impacta en ti lo que otros dicen de ti', 'chismes']; 
-    else if(qConfig.id_pre === 'interes_companeros') strongKeywords = phase === 'pre' ? ['compañeros de curso les importa'] : ['evitar problemas', 'involucrarte en conflictos'];
-    else if(qConfig.id_pre === 'exclusion_presenciada') strongKeywords = phase === 'pre' ? ['personas que son ignoradas o excluidas'] : [];
-    else if(qConfig.id_pre === 'reaccion_malentendido') strongKeywords = phase === 'pre' ? ['ocurriera un malentendido en el grupo'] : [];
-    else if(qConfig.id_pre === 'herramientas_calma') strongKeywords = phase === 'pre' ? ['herramientas tienes para mantener la calma'] : [];
-    else if(qConfig.id_pre === 'accion_frustracion') strongKeywords = phase === 'pre' ? ['sientes frustrado/a o atacado/a'] : [];
-    else if(qConfig.id_pre === 'pre_opcional') strongKeywords = phase === 'pre' ? ['algo más que quieras decirnos'] : ['este es tu espacio', 'compartir con nosotros'];
+    // 1. Exact Match
+    if(keys.includes(targetId)) return targetId;
+
+    // 2. Case Insensitive match
+    for(let k of keys) {
+        if(k.toLowerCase() === targetId.toLowerCase()) return k;
+    }
+
+    // 3. Fallback Heuristic using all possible variations from User's Google Sheet
+    let keywords = [];
+    if(targetId === 'estado_animo' || targetId === 'estado_animo_post') keywords = ['ánimo', 'animo', 'emoción'];
+    else if(targetId === 'sentimiento_una_palabra' || targetId === 'sentimiento_post_taller') keywords = ['palabra', 'sentimiento'];
+    else if(targetId === 'seguridad_ser_yo' || targetId === 'mejora_seguridad') keywords = ['seguridad de si mismo', 'seguro', 'seguridad', 'mismo', 'etiquetas'];
+    else if(targetId === 'seguridad_fisica_colegio' || targetId === 'mejora_preocupacion') keywords = ['fisica', 'física', 'preocupación'];
+    else if(targetId === 'seguridad_emocional_colegio' || targetId === 'capacidad_anclajes') keywords = ['emocional', 'burlas', 'anclaje'];
+    else if(targetId === 'percepcion_chisme' || targetId === 'guion_vida') keywords = ['chisme', 'hablar mal', 'guion'];
+    else if(targetId === 'respeto_hacia_otros' || targetId === 'utilidad_dar_recibir') keywords = ['respeto', 'compañero', 'dar y recibir'];
+    else if(targetId === 'normalizacion_irrespeto' || targetId === 'mejora_respeto') keywords = ['irrespeto', 'inadecuado', 'mejoraron'];
+    else if(targetId === 'impacto_chismes' || targetId === 'reaccion_chisme_post') keywords = ['impacta', 'dicen de ti', 'escuchas'];
+    else if(targetId === 'evitacion_conflictos' || targetId === 'impacto_chismes_post') keywords = ['evitar', 'problemas', 'conflicto'];
+    else if(targetId === 'interes_companeros' || targetId === 'evitacion_conflictos_post') keywords = ['demás', 'importa', 'preocupan', 'importancia de como se siente'];
+    else if(targetId === 'exclusion_presenciada') keywords = ['exclusion', 'exclusión', 'ignoradas', 'excluidas'];
+    else if(targetId === 'reaccion_malentendido') keywords = ['malentendido', 'bandos'];
+    else if(targetId === 'herramientas_calma') keywords = ['calma', 'herramientas'];
+    else if(targetId === 'accion_frustracion') keywords = ['ataque', 'frustrado', 'atacado', 'frustracion'];
+    else if(targetId === 'pre_opcional' || targetId === 'espacio_libre') keywords = ['comentario', 'algo más', 'espacio'];
 
     for(let k of keys) {
         let lowerKey = k.toLowerCase();
-        if(strongKeywords.some(kw => lowerKey.includes(kw.toLowerCase()))) {
+        if(keywords.some(kw => lowerKey.includes(kw.toLowerCase()))) {
             return k;
         }
     }
@@ -453,6 +465,71 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
         cData.labels = combined.map(x => x.l);
         cData.datasets[0].data = combined.map(x => x.v);
     } 
+    else if (qConfig.type === 'moodPie') {
+        cType = 'pie';
+        
+        const moodMap = {
+            'Motivado': { emoji: '🚀', color: '#10b981' }, // Green
+            'Paz': { emoji: '🧘', color: '#3b82f6' }, // Blue
+            'Estresado': { emoji: '🤯', color: '#f59e0b' }, // Orange
+            'Cansado': { emoji: '🪫', color: '#64748b' }, // Gray
+            'Molesto': { emoji: '😡', color: '#ef4444' } // Red
+        };
+
+        const mappedLabels = [];
+        const bgColors = [];
+        const dataValues = [];
+
+        labels.forEach((l, i) => {
+            let foundKey = Object.keys(moodMap).find(k => l.toLowerCase().includes(k.toLowerCase())) || l;
+            if (moodMap[foundKey]) {
+                mappedLabels.push(moodMap[foundKey].emoji);
+                bgColors.push(moodMap[foundKey].color);
+            } else {
+                mappedLabels.push('❓');
+                bgColors.push('#cbd5e1');
+            }
+            dataValues.push(dataVals[i]);
+        });
+
+        cData.labels = mappedLabels;
+        cData.datasets[0].data = dataValues;
+        cData.datasets[0].backgroundColor = bgColors;
+
+        cOptions.plugins.legend = { display: false };
+        cOptions.plugins.datalabels = {
+            color: '#fff',
+            font: { size: 24, weight: 'bold' },
+            formatter: (value, context) => {
+                let emoji = context.chart.data.labels[context.dataIndex];
+                return `${emoji}\n${value}`;
+            },
+            align: 'center',
+            textAlign: 'center'
+        };
+        
+        cOptions.plugins.tooltip = {
+            callbacks: {
+                label: function(context) {
+                    const originalLabel = labels[context.dataIndex];
+                    const val = context.raw;
+                    return `${originalLabel}: ${val} estudiantes (Clic para ver detalle)`;
+                }
+            }
+        };
+
+        cOptions.onHover = (event, chartElement) => {
+            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+        };
+
+        cOptions.onClick = (event, elements, chart) => {
+            if (elements.length > 0) {
+                const dataIndex = elements[0].index;
+                const moodLabel = labels[dataIndex];
+                showMoodDemographics(moodLabel, phase, data, qConfig);
+            }
+        };
+    }
     else if (qConfig.type === 'divergentBar') {
         // Simulación visual de barras divergentes apiladas al 100%
         cType = 'bar';
@@ -598,4 +675,80 @@ function renderResumenEjecutivo() {
     box.innerHTML = `<p><strong>🤖 ANÁLISIS IA EN TIEMPO REAL:</strong></p>
     <p>Segmento activo: <strong>${segmentText}</strong>. Estudiantes analizados: <strong>${filteredData.length}</strong> (${preCount} Pre | ${postCount} Post).</p>
     <p>El dashboard se encuentra actualmente en fase de construcción dinámica recopilando datos base. Los algoritmos de IA analizarán estos patrones detalladamente en breve para brindarte recomendaciones pedagógicas avanzadas. Los gráficos actuales ya operan bajo las reglas UX definidas y simulan resultados si los datos reales aún no llegan.</p>`;
+}
+
+function showMoodDemographics(moodLabel, phase, data, qConfig) {
+    const chartKey = getColumnForPhase(qConfig, data, phase);
+    const subset = data.filter(d => d[chartKey] === moodLabel || (d[chartKey] && d[chartKey].toLowerCase().includes(moodLabel.toLowerCase())));
+    
+    let cursos = {};
+    let generos = {};
+    
+    subset.forEach(d => {
+        let c = extractDemo(d, 'curso') || 'No especificado';
+        let g = extractDemo(d, 'sexo') || 'No especificado';
+        cursos[c] = (cursos[c] || 0) + 1;
+        generos[g] = (generos[g] || 0) + 1;
+    });
+
+    let modal = document.getElementById('mood-demo-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'mood-demo-modal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.6)';
+        modal.style.zIndex = '9999';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        // Animación simple de aparición
+        modal.style.opacity = '0';
+        modal.style.transition = 'opacity 0.2s';
+        document.body.appendChild(modal);
+        
+        // click outside to close
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) modal.style.opacity = '0';
+            setTimeout(() => { if(modal.style.opacity === '0') modal.style.display = 'none'; }, 200);
+        });
+    }
+    
+    // Sort cursos
+    const sortedCursos = Object.keys(cursos).sort((a, b) => {
+        let na = parseInt(a); let nb = parseInt(b);
+        return (isNaN(na) ? 0 : na) - (isNaN(nb) ? 0 : nb);
+    });
+
+    modal.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 16px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Outfit', sans-serif;">
+            <button onclick="document.getElementById('mood-demo-modal').style.opacity='0'; setTimeout(()=>document.getElementById('mood-demo-modal').style.display='none', 200)" style="position: absolute; right: 1rem; top: 1rem; background: #f1f5f9; border: none; font-size: 1.2rem; cursor: pointer; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: #64748b;">&times;</button>
+            <h2 style="margin-top: 0; color: var(--primary); font-size: 1.4rem;">Desglose Demográfico</h2>
+            <p style="color: #475569; font-size: 1.1rem; margin-bottom: 0.5rem;"><strong>Estado de ánimo:</strong> ${moodLabel}</p>
+            <p style="color: #475569; font-size: 1.1rem; margin-top: 0;"><strong>Total estudiantes:</strong> ${subset.length}</p>
+            
+            <div style="display: flex; gap: 2rem; margin-top: 1.5rem;">
+                <div style="flex: 1; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h3 style="font-size: 1.1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-top:0; color: #1e293b; text-align: center;">Por Género</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 1rem; color: #334155;">
+                        ${Object.keys(generos).map(k => `<li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #f1f5f9;"><span>${k}</span> <strong>${generos[k]}</strong></li>`).join('')}
+                    </ul>
+                </div>
+                <div style="flex: 1; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h3 style="font-size: 1.1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-top:0; color: #1e293b; text-align: center;">Por Curso</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 1rem; color: #334155;">
+                        ${sortedCursos.map(k => `<li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #f1f5f9;"><span>${k}</span> <strong>${cursos[k]}</strong></li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 0.85rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0;">Haz clic fuera de la ventana para cerrar</p>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    // Trigger reflow
+    void modal.offsetWidth;
+    modal.style.opacity = '1';
 }
