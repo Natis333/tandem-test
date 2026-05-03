@@ -483,10 +483,10 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
         labels.forEach((l, i) => {
             let foundKey = Object.keys(moodMap).find(k => l.toLowerCase().includes(k.toLowerCase())) || l;
             if (moodMap[foundKey]) {
-                mappedLabels.push(moodMap[foundKey].emoji);
+                mappedLabels.push(`${moodMap[foundKey].emoji} ${foundKey}`);
                 bgColors.push(moodMap[foundKey].color);
             } else {
-                mappedLabels.push('❓');
+                mappedLabels.push(`❓ ${l}`);
                 bgColors.push('#cbd5e1');
             }
             dataValues.push(dataVals[i]);
@@ -496,12 +496,23 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
         cData.datasets[0].data = dataValues;
         cData.datasets[0].backgroundColor = bgColors;
 
-        cOptions.plugins.legend = { display: false };
+        cOptions.plugins.legend = { 
+            display: true,
+            position: 'right',
+            labels: {
+                font: { size: 13, family: "'Outfit', sans-serif" },
+                color: '#475569',
+                padding: 12,
+                usePointStyle: true,
+                pointStyle: 'circle'
+            }
+        };
         cOptions.plugins.datalabels = {
             color: '#fff',
             font: { size: 24, weight: 'bold' },
             formatter: (value, context) => {
-                let emoji = context.chart.data.labels[context.dataIndex];
+                let fullLabel = context.chart.data.labels[context.dataIndex];
+                let emoji = fullLabel.split(' ')[0]; // Extract just the emoji
                 return `${emoji}\n${value}`;
             },
             align: 'center',
