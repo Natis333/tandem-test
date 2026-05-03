@@ -126,19 +126,34 @@ function setView(viewMode, evt) {
 }
 
 function extractDemo(d, type) {
-    const vals = Object.values(d).map(String);
+    const vals = Object.values(d).map(String).map(s => s.trim());
+    
     if (type === 'edad') {
+        let e = d.edad || d.Edad || d['¿Qué edad tienes?'];
+        if (e && String(e).trim().match(/^(1[1-9]|20|\+18)$/)) return String(e).trim();
         let match = vals.find(v => v.match(/^(1[1-9]|20|\+18)$/));
         return match || null;
     }
     if (type === 'sexo') {
+        let s = d.sexo || d.Sexo || d.genero || d.Genero || d['¿Cuál es tu sexo?'];
+        if (s) {
+            let l = String(s).trim().toLowerCase();
+            if (l.startsWith('f') || l === 'mujer') return 'Femenino';
+            if (l.startsWith('m') || l === 'hombre') return 'Masculino';
+        }
         let match = vals.find(v => {
             let l = v.toLowerCase();
-            return l === 'femenino' || l === 'masculino';
+            return l === 'femenino' || l === 'masculino' || l === 'mujer' || l === 'hombre';
         });
-        return match ? (match.toLowerCase().startsWith('f') ? 'Femenino' : 'Masculino') : null;
+        if (match) {
+            let l = match.toLowerCase();
+            return (l.startsWith('f') || l === 'mujer') ? 'Femenino' : 'Masculino';
+        }
+        return null;
     }
     if (type === 'curso') {
+        let c = d.curso || d.Curso || d['¿En qué curso estás actualmente?'];
+        if (c && String(c).trim().match(/^[6-9]º|10º|11º$/)) return String(c).trim();
         let match = vals.find(v => v.match(/^[6-9]º|10º|11º$/));
         return match || null;
     }
@@ -763,3 +778,6 @@ function showMoodDemographics(moodLabel, phase, data, qConfig) {
     void modal.offsetWidth;
     modal.style.opacity = '1';
 }
+
+// Precargar datos automáticamente al abrir la página
+document.addEventListener('DOMContentLoaded', sincronizarDatos);
