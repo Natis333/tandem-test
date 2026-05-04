@@ -9,8 +9,8 @@ let microCharts = {};
 const QUESTIONS_CONFIG = [
     { id_pre: 'estado_animo', id_post: 'estado_animo_post', type: 'moodPie', title: '1. Estado de Ánimo' },
     { id_pre: 'sentimiento_una_palabra', id_post: 'sentimiento_post_taller', type: 'wordCloud', title: '2. Palabra del Día' },
-    { id_pre: 'seguridad_ser_yo', id_post: 'mejora_seguridad', type: 'divergentBar', title: '3. Seguridad Ser Tú Mismo (1-5)' },
-    { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'bubbleDemographic', title: '4. Respeto Físico (Burbujas)' },
+    { id_pre: 'seguridad_ser_yo', id_post: 'mejora_seguridad', type: 'bubbleDemographic', title: '3. Seguridad Ser Tú Mismo (Burbujas)' },
+    { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'divergentBar', title: '4. Respeto Físico (1-5)' },
     { id_pre: 'seguridad_emocional_colegio', id_post: 'capacidad_anclajes', type: 'divergentBar', title: '5. Seguridad Emocional (1-5)' },
     { id_pre: 'percepcion_chisme', id_post: 'guion_vida', type: 'donut', title: '6. Percepción del Chisme' },
     { id_pre: 'respeto_hacia_otros', id_post: 'utilidad_dar_recibir', type: 'bar', title: '7. Respeto a Compañeros (1-5)' },
