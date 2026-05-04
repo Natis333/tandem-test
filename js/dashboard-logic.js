@@ -10,7 +10,7 @@ const QUESTIONS_CONFIG = [
     { id_pre: 'estado_animo', id_post: 'estado_animo_post', type: 'moodPie', title: '1. Estado de Ánimo' },
     { id_pre: 'sentimiento_una_palabra', id_post: 'sentimiento_post_taller', type: 'wordCloud', title: '2. Palabra del Día' },
     { id_pre: 'seguridad_ser_yo', id_post: 'mejora_seguridad', type: 'divergentBar', title: '3. Seguridad Ser Tú Mismo (1-5)' },
-    { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'divergentBar', title: '4. Respeto Físico (1-5)' },
+    { id_pre: 'seguridad_fisica_colegio', id_post: 'mejora_preocupacion', type: 'bubbleDemographic', title: '4. Respeto Físico (Burbujas)' },
     { id_pre: 'seguridad_emocional_colegio', id_post: 'capacidad_anclajes', type: 'divergentBar', title: '5. Seguridad Emocional (1-5)' },
     { id_pre: 'percepcion_chisme', id_post: 'guion_vida', type: 'donut', title: '6. Percepción del Chisme' },
     { id_pre: 'respeto_hacia_otros', id_post: 'utilidad_dar_recibir', type: 'bar', title: '7. Respeto a Compañeros (1-5)' },
@@ -360,6 +360,84 @@ function renderCustomChart(qConfig, data, container, canvasId, phase) {
             span.onmouseout = () => { span.style.transform = 'scale(1)'; span.style.textShadow = 'none'; };
             canvasContainer.appendChild(span);
         });
+        card.appendChild(title); card.appendChild(canvasContainer);
+        container.appendChild(card);
+        return;
+    }
+
+    if (qConfig.type === 'bubbleDemographic') {
+        canvasContainer.style.height = 'auto'; 
+        
+        let targetCursos = ['6º', '7º', '8º'];
+        let matrixHtml = `<div style="display:flex; flex-direction:column; width:100%; font-size:0.85rem; overflow-x:auto;">
+            <div style="display:grid; grid-template-columns: 60px repeat(5, 1fr); gap:10px; font-weight:bold; margin-bottom:10px; text-align:center; color:var(--text-main);">
+                <div>Curso</div><div>1<br><span style="font-size:0.7rem; color:#ef4444;">Alerta</span></div><div>2</div><div>3<br><span style="font-size:0.7rem; color:#ca8a04;">Neutro</span></div><div>4</div><div>5<br><span style="font-size:0.7rem; color:#10b981;">Seguro</span></div>
+            </div>`;
+            
+        let maxCount = 1;
+        targetCursos.forEach(c => {
+            [1,2,3,4,5].forEach(v => {
+                let count = data.filter(d => extractDemo(d, 'curso') === c && parseInt(d[chartKey]) === v).length;
+                if (count > maxCount) maxCount = count;
+            });
+        });
+
+        const zoneColors = {
+            1: { female: '#ef4444', male: '#7f1d1d' }, 
+            2: { female: '#f97316', male: '#9a3412' }, 
+            3: { female: '#fef08a', male: '#ca8a04' }, 
+            4: { female: '#a7f3d0', male: '#047857' }, 
+            5: { female: '#c4b5fd', male: '#5b21b6' }  
+        };
+
+        targetCursos.forEach(c => {
+            matrixHtml += `<div style="display:grid; grid-template-columns: 60px repeat(5, 1fr); gap:10px; margin-bottom:15px; align-items:center;">
+                <div style="text-align:center; font-weight:bold; color:var(--text-main);">${c}</div>`;
+                
+            [1,2,3,4,5].forEach(v => {
+                let cellData = data.filter(d => extractDemo(d, 'curso') === c && parseInt(d[chartKey]) === v);
+                let total = cellData.length;
+                
+                if (total === 0) {
+                    matrixHtml += `<div style="display:flex; justify-content:center;"><div style="width:12px; height:12px; border-radius:50%; background:#e2e8f0; opacity:0.5;" title="0 Estudiantes"></div></div>`;
+                } else {
+                    let female = cellData.filter(d => extractDemo(d, 'sexo') === 'Femenino').length;
+                    let male = cellData.filter(d => extractDemo(d, 'sexo') === 'Masculino').length;
+                    let other = total - female - male;
+                    
+                    let fPct = (female / total) * 100;
+                    let mPct = (male / total) * 100;
+                    let zc = zoneColors[v];
+                    let grad = `conic-gradient(${zc.female} 0% ${fPct}%, ${zc.male} ${fPct}% ${fPct + mPct}%, #cbd5e1 ${fPct + mPct}% 100%)`;
+                    
+                    let size = 15 + (total / maxCount) * 45;
+                    
+                    let groupTotal = data.filter(d => extractDemo(d, 'curso') === c).length || 1;
+                    let pctGroup = Math.round((total / groupTotal) * 100);
+                    
+                    let insight = `El ${pctGroup}% de este curso se siente en nivel ${v}.`;
+                    if (v <= 2) insight = `El ${pctGroup}% de este grupo se siente en riesgo de críticas.`;
+                    else if (v >= 4) insight = `El ${pctGroup}% de este grupo se siente muy seguro.`;
+                    
+                    let tooltipHtml = `Total: ${total} Estudiantes\nGénero: ${female} Mujeres / ${male} Hombres\nInsight: ${insight}`;
+                    
+                    matrixHtml += `<div style="display:flex; justify-content:center; align-items:center;" title="${tooltipHtml}">
+                        <div style="width:${size}px; height:${size}px; border-radius:50%; background:${grad}; box-shadow: 0 3px 6px rgba(0,0,0,0.15); cursor:pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"></div>
+                    </div>`;
+                }
+            });
+            matrixHtml += `</div>`;
+        });
+        
+        matrixHtml += `<div style="margin-top: 20px; font-size: 0.8rem; color: #64748b; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+            <span><strong>Segmentación de la burbuja:</strong></span>
+            <span style="display:flex; align-items:center; gap:4px;"><span style="display:inline-block; width:12px; height:12px; background:conic-gradient(#ef4444 0% 100%); border-radius:50%;"></span>Femenino (Tono Claro)</span>
+            <span style="display:flex; align-items:center; gap:4px;"><span style="display:inline-block; width:12px; height:12px; background:conic-gradient(#7f1d1d 0% 100%); border-radius:50%;"></span>Masculino (Tono Oscuro)</span>
+            <span style="display:flex; align-items:center; gap:4px;"><span style="display:inline-block; width:12px; height:12px; background:#cbd5e1; border-radius:50%;"></span>N/A</span>
+        </div>`;
+        
+        matrixHtml += `</div>`;
+        canvasContainer.innerHTML = matrixHtml;
         card.appendChild(title); card.appendChild(canvasContainer);
         container.appendChild(card);
         return;
