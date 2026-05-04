@@ -1,4 +1,4 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwo5wexH5zSP_LBst33D0BB1By8VVKXfLa_pNebGGxemu1-hSJkdKcLNrNJCqnavsWIdA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyN998njbHZVq1E6tBBi3tIyB6fzJOUlrTcT6NoGhC3S-sUPpVKdak-cvMLkgQfyleVLA/exec';
 let rawData = [];
 let filteredData = [];
 let currentFilter = { curso: 'Todos', genero: 'Todos', edad: 'Todos' };
