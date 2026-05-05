@@ -82,7 +82,7 @@ function sincronizarDatos() {
         
         // Render Executive Hardcoded View
         document.getElementById('kpi-alerta').innerText = '45%';
-        document.getElementById('kpi-exclusion').innerText = '38%';
+        document.getElementById('kpi-exclusion').innerText = '72%';
         
         renderExecutiveDashboard();
         
@@ -91,12 +91,13 @@ function sincronizarDatos() {
 
 function renderExecutiveDashboard() {
     Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.register(ChartDataLabels);
     
     // Cleanup previous charts if any
     if(window.execCharts) window.execCharts.forEach(c => c.destroy());
     window.execCharts = [];
 
-    // 1. Mood Pie
+    // 1. Mood Pie (3 molesto, 2 cansado, 3 paz, 2 motivado, 1 estresado)
     const ctxMood = document.getElementById('chart-mood');
     if(ctxMood) {
         window.execCharts.push(new Chart(ctxMood, {
@@ -104,12 +105,28 @@ function renderExecutiveDashboard() {
             data: {
                 labels: ['🚀 Motivado', '🧘 Paz', '🤯 Estresado', '🪫 Cansado', '😡 Molesto'],
                 datasets: [{
-                    data: [25, 20, 10, 30, 15],
+                    data: [2, 3, 1, 2, 3],
                     backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#64748b', '#ef4444'],
                     borderWidth: 0
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { position: 'right' },
+                    datalabels: {
+                        color: '#fff',
+                        font: { size: 18, weight: 'bold' },
+                        formatter: (value, context) => {
+                            let emoji = context.chart.data.labels[context.dataIndex].split(' ')[0];
+                            return `${emoji}\n${value}`;
+                        },
+                        align: 'center',
+                        textAlign: 'center'
+                    }
+                } 
+            }
         }));
     }
 
@@ -119,13 +136,17 @@ function renderExecutiveDashboard() {
         window.execCharts.push(new Chart(ctxD1, {
             type: 'bar',
             data: {
-                labels: ['11 años', '12 años', '13 años', '14 años'],
+                labels: ['11-12 años', '13 años (6º)', '14 años (8º)'],
                 datasets: [
-                    { label: 'Cansado/Molesto', data: [10, 25, 40, 60], backgroundColor: '#ef4444' },
-                    { label: 'Motivado/Paz', data: [90, 75, 60, 40], backgroundColor: '#10b981' }
+                    { label: 'Cansado/Molesto (Cant)', data: [1, 1, 3], backgroundColor: '#ef4444' },
+                    { label: 'Motivado/Paz (Cant)', data: [3, 2, 1], backgroundColor: '#10b981' }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true, max: 100 } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { x: { stacked: true }, y: { stacked: true, max: 6 } },
+                plugins: { datalabels: { display: false } }
+            }
         }));
     }
 
@@ -137,11 +158,14 @@ function renderExecutiveDashboard() {
             data: {
                 labels: ['6º Grado', '7º Grado', '8º Grado'],
                 datasets: [
-                    { label: 'Seguridad Emocional Alta', data: [45, 65, 30], backgroundColor: '#6366f1' },
-                    { label: 'Seguridad Física Alta', data: [70, 75, 55], backgroundColor: '#8b5cf6' }
+                    { label: 'Seg. Emocional Alta', data: [1, 2, 1], backgroundColor: '#6366f1' },
+                    { label: 'Seg. Física Alta', data: [2, 3, 2], backgroundColor: '#8b5cf6' }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { datalabels: { display: false } }
+            }
         }));
     }
 
@@ -151,13 +175,16 @@ function renderExecutiveDashboard() {
         window.execCharts.push(new Chart(ctxD3, {
             type: 'bar',
             data: {
-                labels: ['Sí, lo veo seguido', 'A veces', 'No, todos integrados'],
+                labels: ['Sí, pasa seguido', 'A veces', 'No, todos integrados'],
                 datasets: [
-                    { label: 'Femenino', data: [100, 0, 0], backgroundColor: '#ec4899' },
-                    { label: 'Masculino', data: [0, 20, 80], backgroundColor: '#3b82f6' }
+                    { label: 'Femenino (Niñas)', data: [3, 0, 0], backgroundColor: '#ec4899' },
+                    { label: 'Masculino (Niños)', data: [0, 0, 8], backgroundColor: '#3b82f6' }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { datalabels: { display: false } }
+            }
         }));
     }
 
@@ -169,11 +196,14 @@ function renderExecutiveDashboard() {
             data: {
                 labels: ['Diversión/Normal', 'Problema Serio', 'Me molesta/Callo'],
                 datasets: [
-                    { label: '6º Grado', data: [20, 60, 20], backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: '#10b981' },
-                    { label: '8º Grado', data: [70, 10, 20], backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444' }
+                    { label: '6º Grado', data: [1, 2, 0], backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: '#10b981' },
+                    { label: '8º Grado', data: [3, 0, 1], backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444' }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100 } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 4 } },
+                plugins: { datalabels: { display: false } }
+            }
         }));
     }
 }
