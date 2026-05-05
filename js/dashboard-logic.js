@@ -150,7 +150,7 @@ function renderExecutiveDashboard() {
         }));
     }
 
-    // 3. D2: Barras Apiladas por Curso (Seguridad Emocional vs Física)
+    // 3. D2: Barras Apiladas por Curso (Seguridad de Ser Uno Mismo)
     const ctxD2 = document.getElementById('chart-d2');
     if(ctxD2) {
         window.execCharts.push(new Chart(ctxD2, {
@@ -158,12 +158,14 @@ function renderExecutiveDashboard() {
             data: {
                 labels: ['6º Grado', '7º Grado', '8º Grado'],
                 datasets: [
-                    { label: 'Seg. Emocional Alta', data: [1, 2, 1], backgroundColor: '#6366f1' },
-                    { label: 'Seg. Física Alta', data: [2, 3, 2], backgroundColor: '#8b5cf6' }
+                    { label: 'Puntaje 3 (Medio)', data: [1, 3, 0], backgroundColor: '#f59e0b' },
+                    { label: 'Puntaje 4 (Alto)', data: [1, 2, 2], backgroundColor: '#3b82f6' },
+                    { label: 'Puntaje 5 (Total)', data: [0, 1, 1], backgroundColor: '#10b981' }
                 ]
             },
             options: { 
                 responsive: true, maintainAspectRatio: false,
+                scales: { x: { stacked: true }, y: { stacked: true, max: 6 } },
                 plugins: { datalabels: { display: false } }
             }
         }));
@@ -203,6 +205,70 @@ function renderExecutiveDashboard() {
             options: { 
                 responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 4 } },
                 plugins: { datalabels: { display: false } }
+            }
+        }));
+    }
+
+    // 6. EXTRA 1: Percepción Exclusión
+    const ctxExtra1 = document.getElementById('chart-extra1');
+    if(ctxExtra1) {
+        window.execCharts.push(new Chart(ctxExtra1, {
+            type: 'bar',
+            data: {
+                labels: ['Sí, seguido', 'A veces', 'No, integrados'],
+                datasets: [{
+                    label: 'Estudiantes',
+                    data: [3, 5, 3],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981']
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: { display: false } },
+                scales: { y: { max: 6 } }
+            }
+        }));
+    }
+
+    // 7. EXTRA 2: Reacción a Conflictos
+    const ctxExtra2 = document.getElementById('chart-extra2');
+    if(ctxExtra2) {
+        window.execCharts.push(new Chart(ctxExtra2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Crean bandos', 'Redes/WhatsApp', 'Hablan directo', 'Ambiente pesado'],
+                datasets: [{
+                    data: [3, 2, 4, 2],
+                    backgroundColor: ['#ef4444', '#f97316', '#10b981', '#64748b']
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'right' }, 
+                    datalabels: { color: '#fff', font: { weight: 'bold' } } 
+                }
+            }
+        }));
+    }
+
+    // 8. EXTRA 3: Interés de Compañeros
+    const ctxExtra3 = document.getElementById('chart-extra3');
+    if(ctxExtra3) {
+        window.execCharts.push(new Chart(ctxExtra3, {
+            type: 'bar',
+            data: {
+                labels: ['1 (Nada)', '2', '3', '4', '5 (Mucho)'],
+                datasets: [{
+                    label: 'Estudiantes',
+                    data: [1, 1, 5, 3, 1],
+                    backgroundColor: '#6366f1'
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: { display: false } },
+                scales: { y: { max: 6 } }
             }
         }));
     }
