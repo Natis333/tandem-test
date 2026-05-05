@@ -52,9 +52,18 @@
         .alert-list li { padding: 0.8rem; border-bottom: 1px solid var(--border); color: var(--danger); font-weight: 500; }
         .alert-list li:last-child { border-bottom: none; }
 
-        .ai-container { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 2rem; align-items: start; }
-        @media(max-width: 768px) { .ai-container { grid-template-columns: 1fr; } }
-        
+        .ai-container { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+        .table-container { overflow-x: auto; margin-bottom: 2rem; }
+        .custom-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-size: 0.95rem; }
+        .custom-table th { background: var(--primary); color: white; padding: 1rem; text-align: left; font-weight: 500; }
+        .custom-table td { padding: 1rem; border-bottom: 1px solid #e2e8f0; color: #334155; vertical-align: top; }
+        .custom-table tr:last-child td { border-bottom: none; }
+        .custom-table tr:hover { background: #f8fafc; }
+        .alert-pill { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+        .alert-critico { background: #fee2e2; color: #ef4444; }
+        .alert-alto { background: #ffedd5; color: #f97316; }
+        .alert-medio { background: #fefce8; color: #eab308; }
+        .alert-moderado { background: #f0fdf4; color: #22c55e; }
     </style>
 </head>
 <body>
@@ -87,7 +96,7 @@
         </div>
         <div class="card" style="text-align:center; border-top: 4px solid var(--warning); padding: 1.5rem;">
             <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Termómetro de Exclusión</h3>
-            <p id="kpi-exclusion" style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--warning);">--%</p>
+            <p id="kpi-exclusion" style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--warning);">72%</p>
             <p style="font-size:0.85rem; color:#64748b; margin:0;">Ven exclusión social "Seguido"</p>
         </div>
     </div>
@@ -141,25 +150,125 @@
     </div>
 
     <!-- INSIGHTS AI (Static for Executive) -->
-    <div class="ai-container" style="display:block;">
+    <div class="ai-container">
+        <!-- Tables Section -->
+        <div class="card">
+            <h2 style="margin-bottom: 1rem; color: var(--primary);">📊 Hallazgos Clave por Dimensión (El "Chisme" Científico)</h2>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Dimensión</th>
+                            <th>Hallazgo Clave</th>
+                            <th>Nivel de Alerta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Estado de Ánimo</strong></td>
+                            <td>Predominan el cansancio y la molestia/irritabilidad. Muchos estudiantes iniciaron marcando "Cansado" o "Molesto", lo que sugiere una carga académica o emocional alta antes de tus sesiones.</td>
+                            <td><span class="alert-pill alert-alto">🟠 Medio-Alto</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seguridad de Ser Uno Mismo</strong></td>
+                            <td>El promedio de seguridad está en un rango medio (aprox. 3.5/5). Hay un miedo latente a las "etiquetas" que frena la autenticidad en el salón.</td>
+                            <td><span class="alert-pill alert-medio">🟡 Moderado</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cultura del Chisme</strong></td>
+                            <td>La mayoría lo ve como "Algo normal que pasa en todos los grupos". El riesgo aquí es la normalización del daño; no lo ven como agresión, sino como paisaje.</td>
+                            <td><span class="alert-pill alert-critico">🔴 Crítico</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gestión de Conflictos</strong></td>
+                            <td>Ante malentendidos, la respuesta reina es la exclusión (crear bandos) o que el problema estalle en redes/WhatsApp. La comunicación directa es la opción menos elegida.</td>
+                            <td><span class="alert-pill alert-critico">🔴 Crítico</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exclusión Social</strong></td>
+                            <td>Una porción significativa admite que "Sí, ven pasar la exclusión seguido". Hay "invisibles" en el aula que el grupo ya identificó.</td>
+                            <td><span class="alert-pill alert-alto">🟠 Alto</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary);">🎯 Dominios de Intervención (11-14 años)</h2>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Dominio</th>
+                            <th>Grados y Edades</th>
+                            <th>Hallazgo Clave (Puntajes 1-5)</th>
+                            <th>Insight para el Dashboard</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>I. Gestión Individual y Salud Mental</strong></td>
+                            <td>11-14 años: Mayor prevalencia de cansancio en hombres de 8º.</td>
+                            <td>Puntaje promedio bajo en herramientas de calma (2.5/5.0).</td>
+                            <td><strong>Batería Baja:</strong> El cansancio no es falta de interés, es agotamiento emocional previo.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>II. Seguridad y Actitud ante el Abuso</strong></td>
+                            <td>12-13 años (7º): Se sienten más seguros de ser ellos mismos.</td>
+                            <td>3.8/5.0: Hay un miedo latente a las "etiquetas" en grupos mixtos.</td>
+                            <td><strong>Espectador Pasivo:</strong> La normalización del irrespeto es mayor en los varones de 13-14 años.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>III. Comunidad y Pertenencia</strong></td>
+                            <td>13 años (6º): Reportan alta exclusión (100% mujeres).</td>
+                            <td>2.25/5.0 en 7º: Es el grado con menor cohesión grupal y empatía.</td>
+                            <td><strong>Brecha de Género:</strong> Las niñas ven la exclusión que los niños ignoran por completo.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IV. Dinámica Vincular (Chisme)</strong></td>
+                            <td>14 años (8º): El chisme se ve como diversión o algo normal.</td>
+                            <td>Alta normalización: El impacto del chisme es subestimado por los estudiantes.</td>
+                            <td><strong>Triangulación:</strong> Los problemas estallan en WhatsApp antes que en el cara a cara.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="card" style="border-left: 4px solid var(--primary);">
-            <h2 style="margin-bottom: 1.5rem;">💡 Insights Psicológicos para Sesiones (Minders AI)</h2>
-            <div class="ai-box" style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; background:transparent; padding:0; border:none;">
-                <div style="background:var(--primary-light); padding:1.2rem; border-radius:8px;">
-                    <h4 style="margin:0 0 0.5rem; color:var(--primary);">🔋 La "Batería Baja" como Identidad</h4>
-                    <p style="margin:0; font-size:0.95rem; color:#334155;">La palabra "cansado" y "prueba" se repiten constantemente. Los chicos se sienten evaluados todo el tiempo. Las sesiones deben ser un "oasis" de no-juicio, no una carga más.</p>
+            <h2 style="margin-bottom: 1.5rem;">💡 Insights Psicológicos para tus Sesiones (El "Chisme" Valioso)</h2>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; font-size: 0.95rem; color: #334155;">
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #3b82f6;">
+                    <strong>La "Batería Baja" como Identidad:</strong> La palabra "cansado" y "prueba" se repiten en las respuestas abiertas. Esto indica que los chicos se sienten evaluados constantemente. Tus sesiones deben ser un "oasis" de no-juicio, no una carga más.
                 </div>
-                <div style="background:#fefce8; padding:1.2rem; border-radius:8px;">
-                    <h4 style="margin:0 0 0.5rem; color:var(--warning);">⚠️ El Triángulo del Chisme</h4>
-                    <p style="margin:0; font-size:0.95rem; color:#334155;">El reto en las 6 sesiones es mover el chisme de "diversión" a "impacto real". Los chicos que marcaron que les afecta "muchísimo" son tu foco de empatía principal.</p>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #ef4444;">
+                    <strong>El Triángulo del Chisme:</strong> Al estar normalizado, tu reto en la serie de 6 sesiones es mover el chisme de la categoría "diversión/normal" a "impacto real". Los chicos que marcaron que les afecta "muchísimo" (4 o 5 en la escala) son tu foco de empatía.
                 </div>
-                <div style="background:#fee2e2; padding:1.2rem; border-radius:8px;">
-                    <h4 style="margin:0 0 0.5rem; color:var(--danger);">🛠️ Analfabetismo en Herramientas</h4>
-                    <p style="margin:0; font-size:0.95rem; color:#334155;">Muchos indicaron que "se guardan todo y se llenan de rabia". Esto valida el taller: les faltan técnicas de "centro" para volver a la calma.</p>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #f59e0b;">
+                    <strong>Analfabetismo en Herramientas:</strong> Muchos marcaron que "se guardan todo y se llenan de rabia" o "no saben cómo calmarse". Esto valida totalmente tu taller: les faltan técnicas de "centro".
                 </div>
-                <div style="background:#f3e8ff; padding:1.2rem; border-radius:8px;">
-                    <h4 style="margin:0 0 0.5rem; color:#8b5cf6;">👁️‍🗨️ Ceguera de Género ante Exclusión</h4>
-                    <p style="margin:0; font-size:0.95rem; color:#334155;">El 100% de las niñas afirma que la exclusión "Sí, pasa seguido". El 100% de los niños dice "No, todos integrados". ¡Ellos no ven lo que ellas sí sufren!</p>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #8b5cf6;">
+                    <strong>Punto Crítico en 7º:</strong> Hemos detectado que en 7º grado el Sentido de Pertenencia (Dominio III) cae a 2.25/5.0. Hay una desconexión empática clara que vamos a atacar con las sesiones de Tandem.
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #6366f1;">
+                    <strong>La Normalización del Chisme:</strong> El chisme ya no se ve como un problema en 8º, sino como una forma de pasar el tiempo. Nuestra intervención en este grado se enfocará en desnaturalizar esta violencia relacional.
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #ef4444;">
+                    <strong>7° Grado es tu "Foco Rojo":</strong> Es el curso donde más predomina la molestia y donde sienten que a sus compañeros menos les importa cómo se sienten (puntaje de 2.2/5).
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #10b981;">
+                    <strong>8° Grado y la "Máscara":</strong> Curiosamente, reportan sentirse muy seguros de ser ellos mismos (4.5), pero su estado predominante es el cansancio. Esto puede indicar un agotamiento por mantener el estatus social.
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #f97316;">
+                    <strong>DATO MÁS CRÍTICO Normalización:</strong> La mayoría percibe el chisme como "algo normal que pasa en todos los grupos", seguido de quienes lo ven como "diversión".  
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #eab308;">
+                    <strong>Exclusión:</strong> El 72% de los encuestados afirma que la exclusión ocurre (ya sea "seguido" o "con personas específicas"). Solo 3 estudiantes sienten que todos están integrados.
+                </div>
+                <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #ec4899;">
+                    <strong>Tendencias por Género:</strong><br>
+                    • En el grupo Femenino, el estado de ánimo predominante reportado es "Paz" (100% de las respuestas de este grupo). Se sienten totalmente seguras (5.0/5.0).<br>
+                    • En el grupo Masculino, aparece un contraste fuerte con un 100% reportando "Cansado".<br>
+                    • El grupo "No especifica" puntúa un 3.75/5.0, indicando que hay reservas o miedo a críticas en el grueso del salón.
                 </div>
             </div>
         </div>
