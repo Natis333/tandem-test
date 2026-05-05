@@ -75,18 +75,20 @@ function sincronizarDatos() {
     btn.innerHTML = 'Sincronizando... ⏳';
     btn.disabled = true;
 
-    // Simulate network delay for the presentation
+    // Fake loading that doesn't touch the charts at all
     setTimeout(() => {
-        btn.innerHTML = 'Sincronizar Datos Automáticamente ⚙️';
-        btn.disabled = false;
-        
-        // Render Executive Hardcoded View
-        document.getElementById('kpi-alerta').innerText = '43%';
-        document.getElementById('kpi-exclusion').innerText = '72%';
-        
-        renderExecutiveDashboard();
-        
-    }, 1200);
+        btn.innerHTML = 'Sincronizado ✅';
+        setTimeout(() => {
+            btn.innerHTML = 'Sincronizar Datos Automáticamente ⚙️';
+            btn.disabled = false;
+        }, 2000);
+    }, 800);
+}
+
+function initExecutiveView() {
+    document.getElementById('kpi-alerta').innerText = '45%';
+    document.getElementById('kpi-exclusion').innerText = '75%';
+    renderExecutiveDashboard();
 }
 
 function renderExecutiveDashboard() {
@@ -1037,4 +1039,4 @@ function showMoodDemographics(moodLabel, phase, data, qConfig) {
 }
 
 // Precargar datos automáticamente al abrir la página
-document.addEventListener('DOMContentLoaded', sincronizarDatos);
+document.addEventListener('DOMContentLoaded', initExecutiveView);
