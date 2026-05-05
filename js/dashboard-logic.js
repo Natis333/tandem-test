@@ -81,7 +81,7 @@ function sincronizarDatos() {
         btn.disabled = false;
         
         // Render Executive Hardcoded View
-        document.getElementById('kpi-alerta').innerText = '45%';
+        document.getElementById('kpi-alerta').innerText = '43%';
         document.getElementById('kpi-exclusion').innerText = '72%';
         
         renderExecutiveDashboard();
@@ -136,10 +136,11 @@ function renderExecutiveDashboard() {
         window.execCharts.push(new Chart(ctxD1, {
             type: 'bar',
             data: {
-                labels: ['11-12 años', '13 años (6º)', '14 años (8º)'],
+                labels: ['11-12 años', '13 años', '+14 años'],
                 datasets: [
-                    { label: 'Cansado/Molesto (Cant)', data: [1, 1, 3], backgroundColor: '#ef4444' },
-                    { label: 'Motivado/Paz (Cant)', data: [3, 2, 1], backgroundColor: '#10b981' }
+                    { label: 'Cansado/Molesto', data: [3, 0, 2], backgroundColor: '#ef4444' },
+                    { label: 'Motivado/Paz', data: [2, 2, 1], backgroundColor: '#10b981' },
+                    { label: 'Estresado', data: [0, 0, 1], backgroundColor: '#f59e0b' }
                 ]
             },
             options: { 
