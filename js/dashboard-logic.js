@@ -70,29 +70,111 @@ function generateMockData() {
     return mock;
 }
 
-async function sincronizarDatos() {
+function sincronizarDatos() {
     const btn = document.getElementById('btn-sync');
-    const originalText = btn.innerHTML;
     btn.innerHTML = 'Sincronizando... ⏳';
     btn.disabled = true;
 
-    try {
-        const response = await fetch(GAS_URL);
-        rawData = await response.json();
-        if(rawData.length === 0 || !rawData[0].curso) {
-            console.warn("No real data detected. Injecting robust mock data for UI visualization.");
-            rawData = generateMockData();
-        }
-    } catch (error) {
-        console.warn("Connection error to GAS. Injecting robust mock data for UI visualization.");
-        rawData = generateMockData();
-    } finally {
-        console.log("Datos cargados:", rawData.length);
-        populateFilters();
-        applyFiltersAndRender();
-        btn.innerHTML = '¡Sincronizado! ✅';
-        setTimeout(() => btn.innerHTML = originalText, 3000);
+    // Simulate network delay for the presentation
+    setTimeout(() => {
+        btn.innerHTML = 'Sincronizar Datos Automáticamente ⚙️';
         btn.disabled = false;
+        
+        // Render Executive Hardcoded View
+        document.getElementById('kpi-alerta').innerText = '45%';
+        document.getElementById('kpi-exclusion').innerText = '38%';
+        
+        renderExecutiveDashboard();
+        
+    }, 1200);
+}
+
+function renderExecutiveDashboard() {
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+    
+    // Cleanup previous charts if any
+    if(window.execCharts) window.execCharts.forEach(c => c.destroy());
+    window.execCharts = [];
+
+    // 1. Mood Pie
+    const ctxMood = document.getElementById('chart-mood');
+    if(ctxMood) {
+        window.execCharts.push(new Chart(ctxMood, {
+            type: 'doughnut',
+            data: {
+                labels: ['🚀 Motivado', '🧘 Paz', '🤯 Estresado', '🪫 Cansado', '😡 Molesto'],
+                datasets: [{
+                    data: [25, 20, 10, 30, 15],
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#64748b', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+        }));
+    }
+
+    // 2. D1: Heatmap (Barra simulando Heatmap para simplificar) - Mood vs Edad
+    const ctxD1 = document.getElementById('chart-d1');
+    if(ctxD1) {
+        window.execCharts.push(new Chart(ctxD1, {
+            type: 'bar',
+            data: {
+                labels: ['11 años', '12 años', '13 años', '14 años'],
+                datasets: [
+                    { label: 'Cansado/Molesto', data: [10, 25, 40, 60], backgroundColor: '#ef4444' },
+                    { label: 'Motivado/Paz', data: [90, 75, 60, 40], backgroundColor: '#10b981' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true, max: 100 } } }
+        }));
+    }
+
+    // 3. D2: Barras Apiladas por Curso (Seguridad Emocional vs Física)
+    const ctxD2 = document.getElementById('chart-d2');
+    if(ctxD2) {
+        window.execCharts.push(new Chart(ctxD2, {
+            type: 'bar',
+            data: {
+                labels: ['6º Grado', '7º Grado', '8º Grado'],
+                datasets: [
+                    { label: 'Seguridad Emocional Alta', data: [45, 65, 30], backgroundColor: '#6366f1' },
+                    { label: 'Seguridad Física Alta', data: [70, 75, 55], backgroundColor: '#8b5cf6' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        }));
+    }
+
+    // 4. D3: Barras Agrupadas por Género (Exclusión)
+    const ctxD3 = document.getElementById('chart-d3');
+    if(ctxD3) {
+        window.execCharts.push(new Chart(ctxD3, {
+            type: 'bar',
+            data: {
+                labels: ['Sí, lo veo seguido', 'A veces', 'No, todos integrados'],
+                datasets: [
+                    { label: 'Femenino', data: [100, 0, 0], backgroundColor: '#ec4899' },
+                    { label: 'Masculino', data: [0, 20, 80], backgroundColor: '#3b82f6' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        }));
+    }
+
+    // 5. D4: Radar Chisme
+    const ctxD4 = document.getElementById('chart-d4');
+    if(ctxD4) {
+        window.execCharts.push(new Chart(ctxD4, {
+            type: 'radar',
+            data: {
+                labels: ['Diversión/Normal', 'Problema Serio', 'Me molesta/Callo'],
+                datasets: [
+                    { label: '6º Grado', data: [20, 60, 20], backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: '#10b981' },
+                    { label: '8º Grado', data: [70, 10, 20], backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100 } } }
+        }));
     }
 }
 

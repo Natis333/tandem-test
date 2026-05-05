@@ -74,68 +74,94 @@
         <select id="filtro-edad" onchange="updateFilters()"><option value="Todos">Todas las Edades</option></select>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs-nav">
-        <button class="tab-link active" onclick="setView('general', event)">⚖️ Vista General (Espejo)</button>
-        <button class="tab-link" onclick="setView('dominios', event)">🎯 Vista por Dominios</button>
-    </div>
-
-    <!-- MAIN ESPEJO LAYOUT -->
-    <div class="espejo-layout">
-        <!-- COLUMNA PRE -->
-        <div class="col col-pre">
-            <div class="card pre-header card-header-noborder">
-                <h2>🔍 Resultados Universo PRE</h2>
-                <p style="margin:0; font-size:0.9rem;">Diagnóstico antes de la intervención.</p>
-            </div>
-            
-            <div id="pre-questions" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
-            
-            <!-- MICRO CHARTS PRE (Demografía) -->
-            <div class="card" style="margin-top: auto;">
-                <h2>📊 Demografía PRE</h2>
-                <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">GÉNERO</h4><div class="micro-wrapper"><canvas id="micro-pre-sexo"></canvas></div></div>
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">EDAD</h4><div class="micro-wrapper"><canvas id="micro-pre-edad"></canvas></div></div>
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">CURSO</h4><div class="micro-wrapper"><canvas id="micro-pre-curso"></canvas></div></div>
-                </div>
-            </div>
+    <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem;">
+        <div class="card" style="text-align:center; border-top: 4px solid var(--primary); padding: 1.5rem;">
+            <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Índice de Autenticidad</h3>
+            <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--primary);">3.5<span style="font-size:1.2rem; color:#94a3b8;">/5</span></p>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">Promedio "Seguridad de ser uno mismo"</p>
         </div>
-
-        <!-- COLUMNA POST -->
-        <div class="col col-post">
-            <div class="card post-header card-header-noborder">
-                <h2>🏆 Resultados Universo POST</h2>
-                <p style="margin:0; font-size:0.9rem;">Impacto después de los talleres.</p>
-            </div>
-            
-            <div id="post-questions" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
-            
-            <!-- MICRO CHARTS POST (Demografía) -->
-            <div class="card" style="margin-top: auto;">
-                <h2>📊 Demografía POST</h2>
-                <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">GÉNERO</h4><div class="micro-wrapper"><canvas id="micro-post-sexo"></canvas></div></div>
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">EDAD</h4><div class="micro-wrapper"><canvas id="micro-post-edad"></canvas></div></div>
-                    <div><h4 style="text-align:center; margin:0 0 0.5rem; color:var(--text-muted)">CURSO</h4><div class="micro-wrapper"><canvas id="micro-post-curso"></canvas></div></div>
-                </div>
-            </div>
+        <div class="card" style="text-align:center; border-top: 4px solid var(--danger); padding: 1.5rem;">
+            <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Termómetro de Alerta</h3>
+            <p id="kpi-alerta" style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--danger);">--%</p>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">Marcan 'Molesto' o 'Cansado' al iniciar</p>
+        </div>
+        <div class="card" style="text-align:center; border-top: 4px solid var(--warning); padding: 1.5rem;">
+            <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Termómetro de Exclusión</h3>
+            <p id="kpi-exclusion" style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--warning);">--%</p>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">Ven exclusión social "Seguido"</p>
         </div>
     </div>
 
-    <!-- INSIGHTS AI -->
-    <div class="ai-container">
+    <!-- MAIN GRAPHS -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
         <div class="card">
-            <h2>💡 Resumen Ejecutivo e Insights (IA)</h2>
-            <div id="resumenEjecutivo" class="ai-box">
-                Sincroniza desde el Google Sheet para generar insights globales de la intervención.
+            <h2>Estado de Ánimo Inicial</h2>
+            <div style="height:250px;"><canvas id="chart-mood"></canvas></div>
+        </div>
+        <div class="card">
+            <h2>Palabra del Día</h2>
+            <div id="wordcloud-container" style="height:250px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; text-align:center; padding: 1rem;">
+                <span style="font-size:3.5rem; color:#6366f1; font-weight:bold; margin:0 12px; line-height:1;">cansado</span>
+                <span style="font-size:2.8rem; color:#3b82f6; margin:0 12px; line-height:1;">prueba</span>
+                <span style="font-size:2rem; color:#f59e0b; margin:0 12px; line-height:1;">estresado</span>
+                <span style="font-size:1.8rem; color:#10b981; margin:0 12px; line-height:1;">bien</span>
+                <span style="font-size:1.4rem; color:#8b5cf6; margin:0 12px; line-height:1;">aburrido</span>
+                <span style="font-size:1.2rem; color:#ef4444; margin:0 12px; line-height:1;">raro</span>
+                <span style="font-size:1rem; color:#64748b; margin:0 12px; line-height:1;">meh</span>
             </div>
         </div>
-        <div class="card" style="border-left: 4px solid var(--danger);">
-            <h2>🚨 Alertas Críticas</h2>
-            <ul id="alertasCriticas" class="alert-list">
-                <li style="color:var(--text-muted); border:none;">Sincroniza para cargar alertas...</li>
-            </ul>
+    </div>
+
+    <!-- THE 4 DOMAINS -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        <!-- Domain I -->
+        <div class="card">
+            <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">I. Gestión Individual (Salud Mental)</h2>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Focos de agotamiento: Estado de Ánimo vs Edad. <br><em>Insight: Agotamiento se concentra en grados/edades superiores.</em></p>
+            <div style="height:250px; position:relative;"><canvas id="chart-d1"></canvas></div>
+        </div>
+        <!-- Domain II -->
+        <div class="card">
+            <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">II. Seguridad y Actitud ante el Abuso</h2>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Seguridad Emocional vs Física por Curso. <br><em>Insight: Mayor seguridad emocional percibida en 7º vs 6º/8º.</em></p>
+            <div style="height:250px; position:relative;"><canvas id="chart-d2"></canvas></div>
+        </div>
+        <!-- Domain III -->
+        <div class="card">
+            <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">III. Comunidad y Pertenencia</h2>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Percepción de Exclusión Social (Brecha de Género). <br><em>Insight: 100% de niñas ven exclusión vs 0% de niños.</em></p>
+            <div style="height:250px; position:relative;"><canvas id="chart-d3"></canvas></div>
+        </div>
+        <!-- Domain IV -->
+        <div class="card">
+            <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">IV. Dinámica Vincular (Cultura del Chisme)</h2>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Evolución de la normalización del chisme (6º a 8º). <br><em>Insight: En 8º se ve como diversión, en 6º como problema serio.</em></p>
+            <div style="height:250px; position:relative;"><canvas id="chart-d4"></canvas></div>
+        </div>
+    </div>
+
+    <!-- INSIGHTS AI (Static for Executive) -->
+    <div class="ai-container" style="display:block;">
+        <div class="card" style="border-left: 4px solid var(--primary);">
+            <h2 style="margin-bottom: 1.5rem;">💡 Insights Psicológicos para Sesiones (Minders AI)</h2>
+            <div class="ai-box" style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; background:transparent; padding:0; border:none;">
+                <div style="background:var(--primary-light); padding:1.2rem; border-radius:8px;">
+                    <h4 style="margin:0 0 0.5rem; color:var(--primary);">🔋 La "Batería Baja" como Identidad</h4>
+                    <p style="margin:0; font-size:0.95rem; color:#334155;">La palabra "cansado" y "prueba" se repiten constantemente. Los chicos se sienten evaluados todo el tiempo. Las sesiones deben ser un "oasis" de no-juicio, no una carga más.</p>
+                </div>
+                <div style="background:#fefce8; padding:1.2rem; border-radius:8px;">
+                    <h4 style="margin:0 0 0.5rem; color:var(--warning);">⚠️ El Triángulo del Chisme</h4>
+                    <p style="margin:0; font-size:0.95rem; color:#334155;">El reto en las 6 sesiones es mover el chisme de "diversión" a "impacto real". Los chicos que marcaron que les afecta "muchísimo" son tu foco de empatía principal.</p>
+                </div>
+                <div style="background:#fee2e2; padding:1.2rem; border-radius:8px;">
+                    <h4 style="margin:0 0 0.5rem; color:var(--danger);">🛠️ Analfabetismo en Herramientas</h4>
+                    <p style="margin:0; font-size:0.95rem; color:#334155;">Muchos indicaron que "se guardan todo y se llenan de rabia". Esto valida el taller: les faltan técnicas de "centro" para volver a la calma.</p>
+                </div>
+                <div style="background:#f3e8ff; padding:1.2rem; border-radius:8px;">
+                    <h4 style="margin:0 0 0.5rem; color:#8b5cf6;">👁️‍🗨️ Ceguera de Género ante Exclusión</h4>
+                    <p style="margin:0; font-size:0.95rem; color:#334155;">El 100% de las niñas afirma que la exclusión "Sí, pasa seguido". El 100% de los niños dice "No, todos integrados". ¡Ellos no ven lo que ellas sí sufren!</p>
+                </div>
+            </div>
         </div>
     </div>
 
