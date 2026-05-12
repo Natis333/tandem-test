@@ -277,6 +277,141 @@ function renderExecutiveDashboard() {
     }
 }
 
+function renderNewExecutiveDashboard() {
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+    if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+    }
+    
+    // Cleanup previous new charts if any
+    if(window.newExecCharts) window.newExecCharts.forEach(c => c.destroy());
+    window.newExecCharts = [];
+
+    // 1. Mood Pie (New: 6 Paz, 5 Cansado, 1 Estresado)
+    const ctxMoodNew = document.getElementById('chart-mood-new');
+    if(ctxMoodNew) {
+        window.newExecCharts.push(new Chart(ctxMoodNew, {
+            type: 'doughnut',
+            data: {
+                labels: ['🧘 Paz', '🪫 Cansado', '🤯 Estresado'],
+                datasets: [{
+                    data: [6, 5, 1],
+                    backgroundColor: ['#3b82f6', '#64748b', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { position: 'right' },
+                    datalabels: {
+                        color: '#fff',
+                        font: { size: 18, weight: 'bold' },
+                        formatter: (value, context) => {
+                            let emoji = context.chart.data.labels[context.dataIndex].split(' ')[0];
+                            return `${emoji}\n${value}`;
+                        },
+                        align: 'center',
+                        textAlign: 'center'
+                    }
+                } 
+            }
+        }));
+    }
+
+    // 2. D1: Seguridad Física y Emocional (Bar Chart)
+    const ctxD1New = document.getElementById('chart-d1-new');
+    if(ctxD1New) {
+        window.newExecCharts.push(new Chart(ctxD1New, {
+            type: 'bar',
+            data: {
+                labels: ['6º Grado', '7º Grado', '8º Grado', '9º Grado'],
+                datasets: [
+                    { label: 'Seguridad Física', data: [4.0, 3.8, 4.2, 2.0], backgroundColor: '#10b981' },
+                    { label: 'Seguridad Emocional', data: [3.5, 3.5, 4.3, 2.5], backgroundColor: '#3b82f6' }
+                ]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { y: { min: 0, max: 5 } },
+                plugins: { datalabels: { display: false } }
+            }
+        }));
+    }
+
+    // 3. D2: Exclusión por Género
+    const ctxD2New = document.getElementById('chart-d2-new');
+    if(ctxD2New) {
+        window.newExecCharts.push(new Chart(ctxD2New, {
+            type: 'bar',
+            data: {
+                labels: ['Femenino', 'Masculino'],
+                datasets: [
+                    { label: 'Ven Exclusión (Seguido / A veces)', data: [80, 71], backgroundColor: '#ef4444' },
+                    { label: 'Todos Integrados', data: [20, 29], backgroundColor: '#10b981' }
+                ]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { max: 100, ticks: { callback: function(value) { return value + "%" } } } },
+                plugins: { 
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) { return context.dataset.label + ': ' + context.raw + '%'; }
+                        }
+                    }
+                }
+            }
+        }));
+    }
+
+    // 4. D3: Reacción a Frustración
+    const ctxD3New = document.getElementById('chart-d3-new');
+    if(ctxD3New) {
+        window.newExecCharts.push(new Chart(ctxD3New, {
+            type: 'pie',
+            data: {
+                labels: ['Trata de calmarse', 'Reacciona inmediato', 'Se guarda todo', 'Técnicas claras'],
+                datasets: [{
+                    data: [6, 2, 2, 2],
+                    backgroundColor: ['#f59e0b', '#ef4444', '#64748b', '#10b981']
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'right' },
+                    datalabels: { color: '#fff', font: { weight: 'bold' } }
+                }
+            }
+        }));
+    }
+
+    // 5. D4: Reacción a Malentendidos
+    const ctxD4New = document.getElementById('chart-d4-new');
+    if(ctxD4New) {
+        window.newExecCharts.push(new Chart(ctxD4New, {
+            type: 'bar',
+            indexAxis: 'y',
+            data: {
+                labels: ['Habla directamente', 'Nadie hace nada', 'Se crean bandos', 'Crece por redes'],
+                datasets: [{
+                    label: 'Estudiantes',
+                    data: [5, 3, 3, 1],
+                    backgroundColor: ['#10b981', '#64748b', '#ef4444', '#f97316']
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: { display: false } },
+                scales: { x: { max: 6 } }
+            }
+        }));
+    }
+}
+
 function populateFilters() {
     const sortedCursos = ['6º', '7º', '8º', '9º', '10º', '11º'];
     const sortedGeneros = ['Femenino', 'Masculino'];

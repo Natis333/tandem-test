@@ -83,6 +83,14 @@
         <select id="filtro-edad" onchange="updateFilters()"><option value="Todos">Todas las Edades</option></select>
     </div>
 
+    <div class="tabs-nav">
+        <button class="tab-link active" onclick="switchDashboardTab(event, 'old')">Pre-Test Anterior</button>
+        <button class="tab-link" onclick="switchDashboardTab(event, 'new')">Nuevo Pre-Test (N=12)</button>
+    </div>
+
+    <div id="tab-old" class="dashboard-tab-content">
+
+
     <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem;">
         <div class="card" style="text-align:center; border-top: 4px solid var(--primary); padding: 1.5rem;">
             <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Índice de Autenticidad</h3>
@@ -299,8 +307,142 @@
                 </div>
             </div>
         </div>
+    </div> <!-- END tab-old -->
+
+    <!-- TAB NEW -->
+    <div id="tab-new" class="dashboard-tab-content" style="display:none;">
+        <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="card" style="text-align:center; border-top: 4px solid var(--success); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Total Participantes</h3>
+                <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--text-main);">12</p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">✅ Óptimo</p>
+            </div>
+            <div class="card" style="text-align:center; border-top: 4px solid var(--warning); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Estado de Ánimo</h3>
+                <p style="font-size: 2.0rem; font-weight:bold; margin:0.5rem 0; color:var(--text-main);">50% Paz</p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">🟡 Neutro (41.7% Cansados)</p>
+            </div>
+            <div class="card" style="text-align:center; border-top: 4px solid var(--success); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Seguridad de ser uno mismo</h3>
+                <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--success);">3.75<span style="font-size:1.2rem; color:#94a3b8;">/5</span></p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">🟢 Estable</p>
+            </div>
+            <div class="card" style="text-align:center; border-top: 4px solid var(--success); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Herramientas de Calma</h3>
+                <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--success);">3.75<span style="font-size:1.2rem; color:#94a3b8;">/5</span></p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">🟢 En mejora</p>
+            </div>
+            <div class="card" style="text-align:center; border-top: 4px solid var(--warning); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Interés de compañeros</h3>
+                <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--warning);">3.25<span style="font-size:1.2rem; color:#94a3b8;">/5</span></p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">🟡 Bajo</p>
+            </div>
+            <div class="card" style="text-align:center; border-top: 4px solid var(--success); padding: 1.5rem;">
+                <h3 style="color:var(--text-muted); font-size:1rem; margin-top:0;">Normalización Irrespeto</h3>
+                <p style="font-size: 2.8rem; font-weight:bold; margin:0.5rem 0; color:var(--success);">2.75<span style="font-size:1.2rem; color:#94a3b8;">/5</span></p>
+                <p style="font-size:0.85rem; color:#64748b; margin:0;">🟢 Bajo (Positivo)</p>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS NUEVOS -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <div class="card">
+                <h2>Estado de Ánimo Inicial</h2>
+                <div style="height:250px;"><canvas id="chart-mood-new"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Palabra del Día</h2>
+                <div id="wordcloud-container-new" style="height:250px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; text-align:center; padding: 1rem; color: #4f46e5;">
+                    <span style="font-size:2rem; font-weight:bold; margin:0 12px; line-height:1; color:#10b981;">tranquila</span>
+                    <span style="font-size:2.5rem; margin:0 12px; line-height:1; color:#3b82f6;">bien</span>
+                    <span style="font-size:2rem; margin:0 12px; line-height:1; color:#3b82f6;">chévere</span>
+                    <span style="font-size:3rem; font-weight:bold; margin:0 12px; line-height:1; color:#64748b;">cansado</span>
+                    <span style="font-size:2.2rem; margin:0 12px; line-height:1; color:#10b981;">tranquilo</span>
+                    <span style="font-size:1.8rem; margin:0 12px; line-height:1; color:#10b981;">tranquilidad</span>
+                    <span style="font-size:2.8rem; margin:0 12px; line-height:1; color:#64748b;">Cansada</span>
+                    <span style="font-size:1.5rem; margin:0 12px; line-height:1; color:#94a3b8;">normal</span>
+                    <span style="font-size:2rem; margin:0 12px; line-height:1; color:#3b82f6;">me siento bien</span>
+                    <span style="font-size:2.2rem; margin:0 12px; line-height:1; color:#10b981;">a gusto</span>
+                    <span style="font-size:1.8rem; margin:0 12px; line-height:1; color:#ef4444;">triste</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <div class="card">
+                <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">I. Seguridad Física y Emocional</h2>
+                <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Promedios por curso (Riesgo en 9º Grado). <br><em>Insight: 9º Grado reporta los niveles más bajos (Física 2.0, Emocional 2.5).</em></p>
+                <div style="height:250px; position:relative;"><canvas id="chart-d1-new"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">II. Percepción de Exclusión</h2>
+                <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Brecha de género en la observación de exclusión. <br><em>Insight: 40% de niñas ven exclusión seguida vs 14% de niños.</em></p>
+                <div style="height:250px; position:relative;"><canvas id="chart-d2-new"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">III. Reacción ante la Frustración</h2>
+                <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Respuestas frente a ataques o conflictos. <br><em>Insight: El 58% trata de calmarse, pero no sabe cómo (falta de herramientas).</em></p>
+                <div style="height:250px; position:relative;"><canvas id="chart-d3-new"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="color:var(--primary); font-size:1.2rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">IV. Reacción a Malentendidos</h2>
+                <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Qué ocurre cuando hay un problema. <br><em>Insight: El silencio (nadie hace nada) crea tensión que luego explota.</em></p>
+                <div style="height:250px; position:relative;"><canvas id="chart-d4-new"></canvas></div>
+            </div>
+        </div>
+
+        <!-- INSIGHTS AI NEW -->
+        <div class="ai-container">
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h2 style="margin-bottom: 1.5rem;">🧠 Insights Psicológicos (Análisis Profundo)</h2>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; font-size: 0.95rem; color: #334155;">
+                    <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #10b981;">
+                        <strong style="color: #047857;">La "Calma Activa":</strong> A pesar del sabotaje inicial de la primera sesión, el post-test revela que el 50% del grupo terminó en Paz. El circuito de juegos canalizó la energía competitiva hacia la tranquilidad. Las herramientas de calma subieron a 3.75, lo que indica que están empezando a internalizar las técnicas de regulación.
+                    </div>
+                    <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #f59e0b;">
+                        <strong style="color: #b45309;">Cansancio Cognitivo, no Emocional:</strong> Un 41.7% reporta cansancio, pero las palabras abiertas (tranquilo, a gusto, chévere) sugieren que es un agotamiento por carga escolar, no por un mal clima en tu sesión.
+                    </div>
+                    <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #6366f1;">
+                        <strong style="color: #4338ca;">El "Espectador Activo":</strong> El 50% admite que la exclusión ocurre "a veces con personas específicas". Esto es un insight psicológico vital: el grupo no es excluyente por naturaleza, sino por clanes o dinámicas selectivas. No hay un odio generalizado, sino "islas" sociales.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-left: 4px solid var(--danger);">
+                <h2 style="margin-bottom: 1.5rem;">🚨 Análisis de Preguntas Críticas y Alertas</h2>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; font-size: 0.95rem; color: #334155;">
+                    <div style="background:#fee2e2; padding:1rem; border-radius:8px; border-left: 4px solid #ef4444;">
+                        <strong style="color: #b91c1c;">Exclusión Presenciada:</strong> Solo el 25% siente que todos están integrados. El 75% restante ve exclusión. <br>
+                        <strong>Alerta Género:</strong> Las Niñas (Femenino) reportan ver exclusión seguida en un 40%, mientras que los Niños (Masculino) la ven mucho menos (14%).<br>
+                        <strong>Acción:</strong> Los niños están "blindados" o son menos conscientes del impacto emocional de dejar a alguien fuera.
+                    </div>
+                    <div style="background:#fff7ed; padding:1rem; border-radius:8px; border-left: 4px solid #f97316;">
+                        <strong style="color: #c2410c;">Reacción a Malentendidos:</strong> El 25% dice que "nadie hace nada y el ambiente se pone pesado".<br>
+                        <strong>Insight:</strong> Este es el caldo de cultivo para el sabotaje. El silencio ante el conflicto es lo que genera la tensión que luego explota en clase.
+                    </div>
+                    <div style="background:#f8fafc; padding:1rem; border-radius:8px; border-left: 4px solid #3b82f6;">
+                        <strong style="color: #1d4ed8;">Alertas por Curso:</strong><br>
+                        • <strong>9º Grado:</strong> Es el curso con las puntuaciones más bajas en Seguridad Física (2.0) y Emocional (2.5). Es tu grupo de mayor riesgo; se sienten desprotegidos.<br>
+                        • <strong>8º Grado:</strong> Es el más seguro de sí mismo (4.25), lo que puede traducirse en liderazgo positivo o, si no se encauza, en los que inician el sabotaje por exceso de confianza.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script>
+        function switchDashboardTab(event, tabId) {
+            document.querySelectorAll('.tab-content, .dashboard-tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tabs-nav .tab-link').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).style.display = 'block';
+            if(event) event.currentTarget.classList.add('active');
+            
+            // Re-render charts for new tab if needed
+            if(tabId === 'new' && typeof renderNewExecutiveDashboard === 'function') {
+                renderNewExecutiveDashboard();
+            }
+        }
+    </script>
     <script src="js/dashboard-logic.js?v=2"></script>
 </body>
 </html>
