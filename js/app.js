@@ -410,7 +410,31 @@ async function submitResults() {
 
     if (GAS_URL !== 'ESCRIBE_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT') {
         try {
-            await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(results) });
+            let finalData = results;
+            if (window.SURVEY_TYPE === 'post') {
+                finalData = {
+                    "survey_type": "post test",
+                    "sheetName": "post test",
+                    "nombre": results.nombre || "",
+                    "apellido": results.apellido || "",
+                    "edad": results.edad || "",
+                    "curso": results.curso || "",
+                    "cuanto lleva en el colegio": results.tiempo_colegio || "",
+                    "estado de animo": results.estado_animo_post || "",
+                    "Tras participar en los talleres, ¿qué tan seguro/a te sientes ahora en tu salón?": results.mejora_seguridad || "",
+                    "Sientes que la preocupación y el cuidado entre compañeros mejoró gracias a lo que trabajamos?": results.mejora_preocupacion || "",
+                    "¿Qué tan capaz te sientes de usar los ejercicios aprendidos en un momento de estrés real?": results.capacidad_anclajes || "",
+                    "Si tus palabras fueran el \"guion\" de tu vida, ¿qué tanto has empezado a editar ese guion para que sea más a tu favor?": results.guion_vida || "",
+                    "Durante los ejercicios prácticos y artísticos, ¿cuál de las siguientes afirmaciones describe mejor tu experiencia en la transición del reconocimiento a la gestión de tus emociones?": results.utilidad_dar_recibir || "",
+                    "¿Sientes que el respeto y la unión del grupo mejoraron tras las sesiones?": results.mejora_respeto || "",
+                    "Después de los talleres, si escuchas un chisme pesado sobre alguien, ¿cuál es tu reacción más probable?": results.reaccion_chisme_post || "",
+                    "¿Qué tanto impacta en ti lo que otros dicen de ti (chismes)?": results.impacto_chismes_post || "",
+                    "¿Prefieres no involucrarte en conflictos de compañeros para evitar problemas?": results.evitacion_conflictos_post || "",
+                    "Describe en UNA palabra cómo te sientes tras haber participado en los espacios de taller:": results.sentimiento_post_taller || "",
+                    "comentario": results.espacio_libre || ""
+                };
+            }
+            await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(finalData) });
         } catch (e) { console.error(e); }
     }
 
