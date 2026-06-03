@@ -4,7 +4,7 @@
  * Jerarquía y Simetría mejorada.
  */
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyN998njbHZVq1E6tBBi3tIyB6fzJOUlrTcT6NoGhC3S-sUPpVKdak-cvMLkgQfyleVLA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw6h8zhrffOFqyv4vNOLn6NefXPFQXfw8_AqF4USjI9Vsrnm-0h2o1J06jt099aoP2Abw/exec';
 
 const baseQuestions = [
     { id: 'nombre', text: '¡Hola!<br><span class="sub-text">Para empezar, dinos tu nombre</span>', type: 'text', placeholder: 'Tu nombre aquí...' },
@@ -156,7 +156,7 @@ const specificQuestions = {
         },
         {
             id: 'capacidad_anclajes',
-            text: '¿Qué tan capaz te sientes de usar los \'Anclajes de Calma\' u otros ejercicios aprendidos en un momento de estrés real?',
+            text: '¿Qué tan capaz te sientes de usar los ejercicios aprendidos en un momento de estrés real?',
             type: 'likert',
             labels: { start: 'No lo recuerdo/no me sale', end: 'Lo uso y me funciona' }
         },
@@ -174,13 +174,13 @@ const specificQuestions = {
         },
         {
             id: 'utilidad_dar_recibir',
-            text: 'El ejercicio de dar y recibir palabras que sumen te sirvió para:',
+            text: 'Durante los ejercicios prácticos y artísticos, ¿cuál de las siguientes afirmaciones describe mejor tu experiencia en la transición del reconocimiento a la gestión de tus emociones?',
             type: 'choice',
             options: [
-                'Ser más cuidadoso/a con lo que digo a los demás.',
-                'Darme cuenta de qué personas me "restan" energía.',
-                'Entender por qué el chisme es "comida chatarra" para el vínculo.',
-                'No me quedó claro el ejercicio.'
+                'El arte me permitió identificar emociones que no podía expresar con palabras, ayudándome a transformarlas y encontrar un espacio de calma.',
+                'Logré reconocer mis emociones, pero me costó canalizarlas a través de las actividades artísticas.',
+                'El proceso creativo me ayudó a ver mis emociones desde afuera, dándome una perspectiva nueva para gestionarlas en mi día a día.',
+                'Experimenté un cambio claro en cómo me sentía al inicio y al final de cada ejercicio gracias al uso de los materiales y el arte.'
             ]
         },
         {
