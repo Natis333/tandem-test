@@ -4,7 +4,7 @@
  * Jerarquía y Simetría mejorada.
  */
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw6h8zhrffOFqyv4vNOLn6NefXPFQXfw8_AqF4USjI9Vsrnm-0h2o1J06jt099aoP2Abw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyLeK2Jy8DwjvmfwOtDGg6I9wv8CEwgZaxlq0sE26CVDEqsc9GjM9zsjveBTSM-hfTIHw/exec';
 
 const baseQuestions = [
     { id: 'nombre', text: '¡Hola!<br><span class="sub-text">Para empezar, dinos tu nombre</span>', type: 'text', placeholder: 'Tu nombre aquí...' },
